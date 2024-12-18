@@ -1,0 +1,8 @@
+npm i nodemon, express, dotenv 
+npm i --save pg pg-hstore
+npm install sequelize
+npm install --save-dev sequelize-cli
+create a .sequelizerc file then paste from page 
+npx sequelize-cli init (to create models,seeders etc)
+npx sequelize-cli model:generate --name Roles --attributes roleName:string, isActive:boolean
+npx sequelize-cli db:migrate or db:migrate:undo
