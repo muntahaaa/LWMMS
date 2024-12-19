@@ -6,3 +6,5 @@ create a .sequelizerc file then paste from page
 npx sequelize-cli init (to create models,seeders etc)
 npx sequelize-cli model:generate --name Roles --attributes roleName:string, isActive:boolean
 npx sequelize-cli db:migrate or db:migrate:undo
+npx sequelize-cli model:generate --name Permission --attributes permissionName:string,isActive:boolean
+npx sequelize-cli model:generate --name rolePermission --attributes roleID:integer,permissionID:integer,isActive:boolean
