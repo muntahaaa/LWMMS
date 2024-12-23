@@ -1,6 +1,6 @@
-const  Role = require('../db/models/role'); 
-const Permission = require('../db/models/permission');
-const RolePermission= require ('../db/models/rolepermission');
+const  Role = require('../../db/models/role'); 
+const Permission = require('../../db/models/permission');
+const RolePermission= require ('../../db/models/rolepermission');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync')
 

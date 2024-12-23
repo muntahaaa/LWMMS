@@ -1,5 +1,5 @@
 const express = require('express');
-const {createContributor} = require('../controller/contributorController');
+const {createContributor} = require('../../src/controller/contributorController');
 
 const ContributorRouter = express.Router();
 

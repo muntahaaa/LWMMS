@@ -1,7 +1,7 @@
 'use strict';
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
-const Role = require('../models/role');
+const Role = require('./role');
 const bcrypt = require('bcrypt');
 
 const User = sequelize.define('User', {

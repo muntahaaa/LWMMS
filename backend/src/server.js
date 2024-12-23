@@ -6,7 +6,8 @@ const rolePermissionRouter = require('./router/rolePermissionRouter');
 const ContributorRouter= require('./router/contributorRouter');
 const AppError= require('./utils/appError');
 const catchAsync= require('./utils/catchAsync');
-const globalErrorHandler= require('./controller/errorController')
+const globalErrorHandler= require('./controller/errorController');
+const userRouter = require('./router/userRouter');
 
 
 const app = express();
@@ -21,6 +22,9 @@ app.use(bodyParser.json());
 app.use('/auth', authRouter);
 app.use('/access',rolePermissionRouter);
 app.use('/contributor', ContributorRouter);
+app.use('/users',userRouter);
+
+
 app.use('*', (req, res) => {
   res.status(404).json({ 
     error: 'Route not found' });

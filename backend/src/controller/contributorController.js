@@ -1,4 +1,4 @@
-const Contributor = require('../db/models/contributor');
+const Contributor = require('../../db/models/contributor');
 const createContributor = async(req , res ) => {
     const {contributorName, email, phone, description} =req.body;
 
