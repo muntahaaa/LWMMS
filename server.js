@@ -3,6 +3,7 @@ const express= require('express');
 const bodyParser = require('body-parser');
 const authRouter = require('./router/authRouter');
 const rolePermissionRouter = require('./router/rolePermissionRouter');
+const ContributorRouter= require('./router/contributorRouter');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 app.use('/auth', authRouter);
 app.use('/access',rolePermissionRouter);
+app.use('/contributor', ContributorRouter);
 app.use('*', (req, res) => {
   res.status(404).json({ 
     error: 'Route not found' });

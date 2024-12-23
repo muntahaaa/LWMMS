@@ -32,7 +32,7 @@ const Permission = sequelize.define(
     },
   },
   {
-    tableName: 'Permission',
+    tableName: 'Permissions',
     sequelize,
     modelName: 'Permission',
   }
@@ -40,7 +40,7 @@ const Permission = sequelize.define(
 
 Permission.associate = (models) => {
   Permission.belongsToMany(models.Role, {
-    through: 'RolePermission',
+    through: 'RolePermissions',
     foreignKey: 'permissionId',
     otherKey: 'roleId',
     uniqueKey:false,

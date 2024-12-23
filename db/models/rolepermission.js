@@ -34,7 +34,7 @@ module.exports = sequelize.define('RolePermission', {
   },
  
 },{
-  tableName: 'RolePermission',
+  tableName: 'RolePermissions',
   sequelize,
   modelName: 'RolePermission',
 });

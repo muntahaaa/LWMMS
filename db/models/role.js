@@ -31,7 +31,7 @@ const Role = sequelize.define(
     },
   },
   {
-    tableName: 'Role',
+    tableName: 'Roles', //name will be plural
     sequelize,
     modelName: 'Role',
   }
@@ -39,13 +39,19 @@ const Role = sequelize.define(
 
 Role.associate = (models) => {
   Role.belongsToMany(models.Permission, {
-    through: 'RolePermission',
+    through: 'RolePermissions',
     foreignKey: 'roleId',
     otherKey: 'permissionId',
     uniqueKey:false,
     as: 'permissions', // Use plural alias
   });
 };
+ Role.associate = (models) => {
+   Role.hasMany(models.User, {
+     foreignKey: 'RoleID'
+   });
+ };
+
 
 module.exports = Role;
 
