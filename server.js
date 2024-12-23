@@ -4,6 +4,10 @@ const bodyParser = require('body-parser');
 const authRouter = require('./router/authRouter');
 const rolePermissionRouter = require('./router/rolePermissionRouter');
 const ContributorRouter= require('./router/contributorRouter');
+const AppError= require('./utils/appError');
+const catchAsync= require('./utils/catchAsync');
+const globalErrorHandler= require('./controller/errorController')
+
 
 const app = express();
 
@@ -21,6 +25,13 @@ app.use('*', (req, res) => {
   res.status(404).json({ 
     error: 'Route not found' });
 });
+
+//error middleware
+app.use('*', catchAsync(async(req, res,next) => {
+  throw new AppError('This is an invalid route', 404);
+}));
+
+app.use(globalErrorHandler);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);

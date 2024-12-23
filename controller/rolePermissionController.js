@@ -1,11 +1,15 @@
 const  Role = require('../db/models/role'); 
 const Permission = require('../db/models/permission');
 const RolePermission= require ('../db/models/rolepermission');
-const createRole = async (req, res) => {
+const AppError = require('../utils/appError');
+const catchAsync = require('../utils/catchAsync')
+
+const createRole = catchAsync(async (req, res) => {
     const { roleName, isActive } = req.body;
 
     if (!roleName || isActive === undefined) {
-        return res.status(400).json({ error: 'roleName and isActive are required' });
+      
+        throw new AppError('roleName and Active status are required',400);
     }
 
     try {
@@ -17,15 +21,18 @@ const createRole = async (req, res) => {
         return res.status(201).json(newRole);
     } catch (error) {
         console.error('Error adding role:', error);
-        return res.status(500).json({ error: 'Failed to add role ' });
+       
+        throw new AppError('Failed to add role',500);
+        
     }
-};
+});
 
-const createPermission = async (req, res) => {
+const createPermission = catchAsync(async (req, res) => {
     const { permissionName, isActive } = req.body;
 
     if (!permissionName || isActive === undefined) {
-        return res.status(400).json({ error: 'permissionName and isActive are required' });
+       
+        throw new AppError('permissionName and Active status are required',400);
     }
 
     try {
@@ -37,29 +44,32 @@ const createPermission = async (req, res) => {
         return res.status(201).json(newPermission);
     } catch (error) {
         console.error('Error adding role:', error);
-        return res.status(500).json({ error: 'Failed to add permission ' });
+       
+        throw new AppError('Failed to add permission',500);
     }
-};
-const viewRoles = async (req, res) => {
+});
+const viewRoles =catchAsync (async (req, res) => {
     try {
         const roleList = await Role.findAll();
         return res.status(200).json(roleList);
     } catch (error) {
         console.error('Error fetching roles:', error);
-        return res.status(500).json({ error: 'Failed to fetch roles', details: error.message });
+        //return res.status(500).json({ error: 'Failed to fetch roles', details: error.message });
+        throw new AppError('Failed to fetch roles',500);
     }
-};
-const viewPermissions = async (req, res) => {
+});
+const viewPermissions = catchAsync(async (req, res) => {
     try {
         const permissionList = await Permission.findAll();
         return res.status(200).json(permissionList);
     } catch (error) {
         console.error('Error fetching permissions:', error);
-        return res.status(500).json({ error: 'Failed to fetch permissions', details: error.message });
+        //return res.status(500).json({ error: 'Failed to fetch permissions', details: error.message });
+        throw new AppError('Failed to fetch permissions',500);
     }
-};
+});
 
-  const setUpAssociation = async (req, res) =>{
+  const setUpAssociation = catchAsync(async (req, res) =>{
     
 
     try{
@@ -70,7 +80,8 @@ const viewPermissions = async (req, res) => {
         const permission = await Permission.findOne({ where: { permissionName } });
 
         if(!role || !permission){
-            return res.status(404).json({error: 'Role or Permission not found'});
+            
+            throw new AppError('Role or Permission not found',404);
         }
         console.log(`Role id = ${role.id} Permission id = ${permission.id}`);
         await RolePermission.create({
@@ -84,9 +95,10 @@ const viewPermissions = async (req, res) => {
           });
     }catch(error){
         console.error('Error assigning role permission:', error);
-        return res.status(500).json({error: 'Failed to assign role permission', details: error.message});
+        //return res.status(500).json({error: '', details: error.message});
+        throw new AppError('Failed to assign role permission',500);
     }
-  }
+  });
 
 module.exports = {
     createRole, createPermission,  viewRoles,

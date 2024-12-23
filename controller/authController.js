@@ -1,21 +1,24 @@
+require('dotenv').config({ path: `${process.cwd()}/.env` });
 const User = require('../db/models/user');
 const Role = require('../db/models/role');
 const AppError = require('../utils/appError');
-require('dotenv').config({ path: `${process.cwd()}/.env` });
+const catchAsync = require('../utils/catchAsync');
 const jwt= require('jsonwebtoken');
 const bcrypt= require('bcrypt');
+
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN});
  };
  
-const signUp = async (req, res) => {
+const signUp = catchAsync(async (req, res,next) => {
  
   const {Name, Email,Password,roleName } = req.body;
   
   try{
    const role = await Role.findOne({where: {roleName}});
    if(!role){
-    return res.status(404).json({ error: 'Role not found' });
+   
+    throw new AppError('Role not found',404);
    }
 
    const newUser = await User.create({
@@ -30,22 +33,25 @@ const signUp = async (req, res) => {
     delete result.deletedAt;
    res.status(201).json({ newUser }); 
   }catch (error) {
-    res.status(400).json({ error: error.message });
+  
+    next(new AppError('Failed to create new User', 500));
   }
   
-};
+});
 
-const login = async(req, res, next) =>{
+const login = catchAsync(async(req, res, next) =>{
+  try{
   const {Email, Password}= req.body; 
   if(!Email || !Password){
-    return res.status(400).json({ error: 'Email and password are required' });
-    //throw new Error('Email and password are required', 400);
+    
+   
+    throw new AppError('Email and password are required', 400);
  }
  const result = await User.findOne({where: {Email}});
  if(!result || !(await bcrypt.compare(Password, result.Password))){
 
-  return res.status(401).json({ error: 'User not found. Check your email and password' });
-  //throw new Error('User not found. Check your email and password', 401);
+ 
+  throw new AppError('User not found. Check your email and password', 401);
   }
   const token= generateToken({
     id: result.id,
@@ -57,7 +63,10 @@ return res.status(200).json({
   message: 'User logged in successfully',
   data: {token}
 });
+  }catch(error){
+    next(error);
+  }
 
-}
+});
 
 module.exports = { signUp, login };
