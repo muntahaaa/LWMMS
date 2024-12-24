@@ -62,11 +62,11 @@ const User = sequelize.define('User', {
 
 // Define the associations
 User.belongsTo(Role, {
-  foreignKey: 'RoleID',
+  foreignKey: 'RoleID',  //child
  
 });
 Role.hasMany(User, {
-  foreignKey: 'RoleID',
+  foreignKey: 'RoleID',  //parent
 
 });
 

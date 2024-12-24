@@ -1,12 +1,13 @@
 const express = require('express');
-const {createContributor} = require('../../src/controller/contributorController');
+const {createContributor, getContributorDetails} = require('../../src/controller/contributorController');
+const {protect} = require('../../middleware/authMiddleware');
 
 const ContributorRouter = express.Router();
 
 // Define routes for contributors
-//router.get('/', contributorController.getAllContributors);
+ContributorRouter.get('/contributor-detail',protect,getContributorDetails);
 //router.get('/:id', contributorController.getContributorById);
-ContributorRouter.post('/add', createContributor);
+ContributorRouter.post('/add', protect,createContributor);
 //router.put('/:id', contributorController.updateContributor);
 //router.delete('/:id', contributorController.deleteContributor);
 

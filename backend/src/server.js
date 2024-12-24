@@ -8,6 +8,7 @@ const AppError= require('./utils/appError');
 const catchAsync= require('./utils/catchAsync');
 const globalErrorHandler= require('./controller/errorController');
 const userRouter = require('./router/userRouter');
+const itemRouter = require('./router/itemRouter');
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/auth', authRouter);
 app.use('/access',rolePermissionRouter);
 app.use('/contributor', ContributorRouter);
 app.use('/users',userRouter);
+app.use('/items',itemRouter);
 
 
 app.use('*', (req, res) => {

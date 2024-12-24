@@ -13,3 +13,4 @@ npx sequelize-cli model:generate --name Permission --attributes permissionName:s
 npx sequelize-cli model:generate --name rolePermission --attributes roleID:integer,permissionID:integer,isActive:boolean
 npx sequelize-cli model:generate --name Contributor --attributes contributorName:string, email:Email, phone:integer, description:TEXT
 npx sequelize-cli model:generate --name User --attributes Username:string,Email:string,Password:string,FullName:string,RoleID:integer
+npx sequelize-cli model:generate --name Item --attributes title:string, description:string, location:string, latitude:integer, longitude:integer, displayStatus:string, createdBy:integer, contributorID:integer
