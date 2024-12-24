@@ -39,10 +39,12 @@ const Item = sequelize.define('Item', {
     defaultValue: '-',
   },
   latitude: {
-    type: Sequelize.FLOAT
+    type: Sequelize.FLOAT,
+    defaultValue: '-',
   },
   longitude: {
-    type: Sequelize.FLOAT
+    type: Sequelize.FLOAT,
+    defaultValue: '-',
   },
   displayStatus: {
     type: Sequelize.ENUM('displayed', 'archived')

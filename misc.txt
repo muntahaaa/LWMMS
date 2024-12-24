@@ -2,6 +2,7 @@ npm i nodemon, express, dotenv
 npm i bcrypt
 npm i jsonwebtoken
 npm i body-parser
+npm i multer
 npm i --save pg pg-hstore
 npm install sequelize
 npm install --save-dev sequelize-cli

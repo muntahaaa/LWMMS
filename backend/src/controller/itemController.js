@@ -1,4 +1,6 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const Contributor = require('../../db/models/contributor');
 const Item = require('../../db/models/item');
 const catchAsync = require('../utils/catchAsync');
@@ -7,11 +9,25 @@ const bodyParser = require('body-parser');
 const { Op } = require('sequelize');
 
 
+/*const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'item-media-uploads/');
+    },
+    filename: (req, file, cb) => {
+        const contributorID = req.body.contributorID; 
+      const title = req.body.title.replace(/\s+/g, '_'); // Replace spaces with underscores
+      cb(null, `${contributorID}_${title}${path.extname(file.originalname)}`);
+    }
+  });
+  
+  const upload = multer({ storage });*/
+
 const createItem = catchAsync(async(req,res,next)=>{
     const { contributor, itemDetails} = req.body;
+    //const mediaAttachment = req.file ? req.file.path : null;
     const createdBy = req.user.id;
-    console.log('Contributor:', contributor);
-    console.log('Request Body:', req.body);
+    //console.log('Contributor:', contributor);
+    //console.log('Request Body:', req.body);
 
 
     if (!contributor || !contributor.contributorName || !contributor.phone) {
@@ -21,19 +37,26 @@ const createItem = catchAsync(async(req,res,next)=>{
     let existingContributor = await Contributor.findOne({
         where:{
             contributorName: contributor.contributorName,
-          
-            phone: contributor.phone,
-          
+            phone: contributor.phone,  
         },
     });
 
     if(!existingContributor){
         existingContributor = await Contributor.create(contributor);
     }
-    const newItem = await Item.create({
+    req.contributorID = existingContributor.id;
+    const newItemDetails = {
         ...itemDetails,
-        contributorID: existingContributor.id, // Associate the contributor ID
+        category: Array.isArray(itemDetails.category) ? itemDetails.category : [],
+        tags: Array.isArray(itemDetails.tags) ? itemDetails.tags : [],
+      };
+   
+    const mediaLocation = req.file ? req.file.path : null;
+    const newItem = await Item.create({
+        ...newItemDetails,
+        contributorID: existingContributor.id, 
         createdBy,
+        mediaLocation
       });
       res.status(201).json({
         status: 'success in creating item',

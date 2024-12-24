@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/auth', authRouter);
 app.use('/access',rolePermissionRouter);
@@ -27,10 +28,10 @@ app.use('/users',userRouter);
 app.use('/items',itemRouter);
 
 
-app.use('*', (req, res) => {
-  res.status(404).json({ 
-    error: 'Route not found' });
-});
+// app.use('*', (req, res) => {
+//   res.status(404).json({ 
+//     error: 'Route not found' });
+// });
 
 //error middleware
 app.use('*', catchAsync(async(req, res,next) => {
