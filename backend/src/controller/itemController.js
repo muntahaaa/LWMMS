@@ -125,15 +125,15 @@ const getAllItems = catchAsync(async (req, res, next) => {
   const getItemById = catchAsync(async (req, res, next) => {
     const { id } = req.params;
   
-    // Validate input
+  
     if (!id) {
       return next(new AppError('Item ID is required', 400));
     }
   
-    // Fetch the item by ID
+   
     const item = await Item.findByPk(id);
   
-    // Check if the item exists
+   
     if (!item) {
       return next(new AppError('No item found with the specified ID', 404));
     }
