@@ -2,7 +2,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
-// Define the Permission model
+
 const Permission = sequelize.define(
   'Permission',
   {

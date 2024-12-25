@@ -1,4 +1,4 @@
-npm i nodemon, express, dotenv 
+npm i nodemon, express, dotenv ,cors
 npm i bcrypt
 npm i jsonwebtoken
 npm i body-parser
@@ -15,3 +15,5 @@ npx sequelize-cli model:generate --name rolePermission --attributes roleID:integ
 npx sequelize-cli model:generate --name Contributor --attributes contributorName:string, email:Email, phone:integer, description:TEXT
 npx sequelize-cli model:generate --name User --attributes Username:string,Email:string,Password:string,FullName:string,RoleID:integer
 npx sequelize-cli model:generate --name Item --attributes title:string, description:string, location:string, latitude:integer, longitude:integer, displayStatus:string, createdBy:integer, contributorID:integer
+
+

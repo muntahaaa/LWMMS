@@ -1,7 +1,7 @@
 'use strict';
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
-module.exports = sequelize.define('RolePermission', { 
+const RolePermission = sequelize.define('RolePermission', { 
   id: {
     allowNull: false,
     autoIncrement: true,
@@ -38,5 +38,7 @@ module.exports = sequelize.define('RolePermission', {
   sequelize,
   modelName: 'RolePermission',
 });
+
+module.exports= RolePermission;
 
 

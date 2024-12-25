@@ -11,6 +11,9 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../../config/config.js')[env];
 const db = {};
 
+//const model = require(path.join(__dirname, file));
+//model.init(sequelize, Sequelize.DataTypes);
+
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
