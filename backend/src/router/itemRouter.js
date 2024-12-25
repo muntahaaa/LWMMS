@@ -1,11 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const itemController = require('../controller/itemController');
 const {protect} = require('../../middleware/authMiddleware')
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
 const itemRouter = express.Router();
+itemRouter.use(bodyParser.json());
+itemRouter.use(cors());
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

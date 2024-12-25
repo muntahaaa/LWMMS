@@ -54,7 +54,7 @@ const viewRoles =catchAsync (async (req, res) => {
         return res.status(200).json(roleList);
     } catch (error) {
         console.error('Error fetching roles:', error);
-        //return res.status(500).json({ error: 'Failed to fetch roles', details: error.message });
+       
         throw new AppError('Failed to fetch roles',500);
     }
 });
@@ -64,7 +64,7 @@ const viewPermissions = catchAsync(async (req, res) => {
         return res.status(200).json(permissionList);
     } catch (error) {
         console.error('Error fetching permissions:', error);
-        //return res.status(500).json({ error: 'Failed to fetch permissions', details: error.message });
+      
         throw new AppError('Failed to fetch permissions',500);
     }
 });

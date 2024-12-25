@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Signup from './components/signup';
-import Login from './components/login';
-import ViewItems from './components/viewItems';
-import AddItemForm from './components/addItem';
-import SearchItem from './components/searchItem';
+import Signup from './components/auth/signup';
+import Login from './components/auth/login';
+import ViewItems from './components/items/viewItems';
+import AddItemForm from './components/items/addItem';
+import SearchItem from './components/items/searchItem';
 
 const AppRoutes = () => (
   <Routes>

@@ -1,6 +1,7 @@
 require('dotenv').config({ path: `${process.cwd()}/.env` });
 const express= require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const authRouter = require('./router/authRouter');
 const rolePermissionRouter = require('./router/rolePermissionRouter');
 const ContributorRouter= require('./router/contributorRouter');
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/auth', authRouter);
@@ -28,12 +30,7 @@ app.use('/users',userRouter);
 app.use('/items',itemRouter);
 
 
-// app.use('*', (req, res) => {
-//   res.status(404).json({ 
-//     error: 'Route not found' });
-// });
 
-//error middleware
 app.use('*', catchAsync(async(req, res,next) => {
   throw new AppError('This is an invalid route', 404);
 }));

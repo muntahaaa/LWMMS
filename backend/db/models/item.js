@@ -28,12 +28,7 @@ const Item = sequelize.define('Item', {
     type: Sequelize.STRING,
     defaultValue: '-',
   },
-  category: {
-    type: Sequelize.ARRAY(Sequelize.STRING),
-  },
-  tags: {
-    type: Sequelize.ARRAY(Sequelize.STRING),
-  },
+  
   location: {
     type: Sequelize.STRING,
     defaultValue: '-',
