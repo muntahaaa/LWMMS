@@ -52,7 +52,7 @@ module.exports = {
         }
       },
        mediaLocation: {
-          type: Sequelize.STRING,
+          type: Sequelize.TEXT,
           defaultValue: '-',
           
        },

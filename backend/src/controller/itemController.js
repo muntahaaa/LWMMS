@@ -12,6 +12,7 @@ const AppError = require('../utils/appError');
 const bodyParser = require('body-parser');
 const sequelize = require('../../config/database'); 
 const { Op } = require('sequelize');
+const fs = require('fs');
 
 
 
@@ -45,7 +46,12 @@ const createItem = catchAsync(async (req, res, next) => {
         tags: Array.isArray(itemDetails.tags) ? itemDetails.tags : [],
     };
 
-    const mediaLocation = req.file ? req.file.path : null;
+    //const mediaLocation = req.file ? req.file.path.replace(/\\/g, '/') : null;
+    const mediaLocation = req.file
+        ? `data:${req.file.mimetype};base64,${fs.readFileSync(req.file.path).toString('base64')}`
+        : null;
+
+
     
     const newItem = await Item.create({
         ...newItemDetails,

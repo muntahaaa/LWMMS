@@ -17,9 +17,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-item" element={<AddItem />} />
           <Route path="/view-items" element={<ViewItems />} />
-          {/*
-          
-          <Route path="/search-item" element={<SearchItem />} /> */}
+         
         </Routes>
       </div>
     </Router>

@@ -10,9 +10,11 @@ const catchAsync= require('./utils/catchAsync');
 const globalErrorHandler= require('./controller/errorController');
 const userRouter = require('./router/userRouter');
 const itemRouter = require('./router/itemRouter');
+const path = require('path');
 
 
 const app = express();
+app.use('/item-media-uploads', express.static(path.join(__dirname, 'item-media-uploads')));
 
 app.get('/', (req, res) => {
   res.send('LWMMS is working');

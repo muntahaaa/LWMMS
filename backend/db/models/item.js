@@ -59,7 +59,7 @@ const Item = sequelize.define('Item', {
     }
   },
   mediaLocation: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     defaultValue: '-',
 
   },
