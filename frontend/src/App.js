@@ -4,6 +4,7 @@ import Home from './components/layout/Home';
 import Signup from './components/auth/signup';
 import Login from './components/auth/login';
 import Dashboard from './components/layout/Dashboard';
+import AddItem from './components/items/addItem';
 function App() {
   return (
     <Router>
@@ -16,6 +17,7 @@ function App() {
           {/*<Route path="/view-items" element={<ViewItems />} />
           <Route path="/add-item" element={<AddItemForm />} />
           <Route path="/search-item" element={<SearchItem />} /> */}
+          <Route path="/add-item" element={<AddItem />} />
         </Routes>
       </div>
     </Router>

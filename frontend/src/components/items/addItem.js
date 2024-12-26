@@ -1,162 +1,260 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from '../../axiosConfig';
+import React, { useState } from "react";
+import axios from "../../axiosConfig";
 
-const AddItemForm = ({ token }) => {
+const AddItem = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    categories: '',
-    tags: '',
-    location: '',
-    latitude: '',
-    longitude: '',
-    displayStatus: 'displayed',
-    mediaAttachment: []
+    contributorName: "",
+    phone: "",
+    email: "",
+    description: "",
+    title: "",
+    itemDescription: "",
+    location: "",
+    latitude: "",
+    longitude: "",
+    categories: [],
+    tags: [],
   });
 
-  const [contributorData, setContributorData] = useState({
-    contributorName: '',
-    phone: '',
-    email:'',
-    description:''
-  });
+  const [mediaAttachment, setMediaAttachment] = useState(null);
+  const [message, setMessage] = useState(""); // For displaying messages
 
-  const [existingContributors, setExistingContributors] = useState([]);
-  const [isExistingContributor, setIsExistingContributor] = useState(true);
-  const [selectedContributorID, setSelectedContributorID] = useState('');
-  const [message, setMessage] = useState(''); 
-  const navigate = useNavigate();
-
-
-   
-    useEffect(() => {
-      // Fetch all contributors from the backend
-      const fetchContributors = async () => {
-        try {
-          const response = await axios.get('/contributor/all', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setExistingContributors(response.data.data.contributors);
-        } catch (error) {
-          console.error('Failed to fetch contributors', error);
-        }
-      };
-  
-      fetchContributors();
-    }, [token]);
-
-    const handleChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-  
-    const handleContributorChange = (e) => {
-      setContributorData({ ...contributorData, [e.target.name]: e.target.value });
-    };
-  
-    const handleFileChange = (e) => {
-      setFormData({ ...formData, mediaAttachment: Array.from(e.target.files) });
-    };
-  
-
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      const data = new FormData();
-    
-      if (isExistingContributor) {
-        data.append('contributorID', selectedContributorID);
-      } else {
-        const contributorResponse = await axios.post('/contributor/add', contributorData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const newContributorID = contributorResponse.data.data.contributor.id;
-        data.append('contributorID', newContributorID);
-      }
-    
-      data.append('itemDetails', JSON.stringify({
-        title: formData.title,
-        description: formData.description,
-        category: formData.category.split(',').map(cat => cat.trim()),
-        tags: formData.tags.split(',').map(tag => tag.trim()),
-        location: formData.location,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        displayStatus: formData.displayStatus
-      }));
-    
-      if (formData.mediaAttachments) {
-        formData.mediaAttachments.forEach((file, index) => {
-          data.append('mediaAttachment', file); // Ensure the field name matches
-        });
-      }
-    
-      try {
-        const response = await axios.post('/items/add', data, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setMessage('Item created successfully!');
-        console.log('Item created successfully:', response.data);
-      } catch (error) {
-        setMessage('Failed to create item. Please try again.');
-        console.error('Failed to create item:', error);
-      }
-    };
-
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
-          <h2 className="text-2xl font-bold mb-4">Add Item</h2>
-          <input type="text" name="title" placeholder="Title" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-          <textarea name="description" placeholder="Description" onChange={handleChange} className="mb-2 p-2 border rounded w-full"></textarea>
-          <input type="text" name="category" placeholder="Category (comma-separated)" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-          <input type="text" name="tags" placeholder="Tags (comma-separated)" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-          <input type="text" name="location" placeholder="Location" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-          <input type="text" name="latitude" placeholder="Latitude" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-          <input type="text" name="longitude" placeholder="Longitude" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-          <select name="displayStatus" onChange={handleChange} className="mb-2 p-2 border rounded w-full">
-            <option value="displayed">Displayed</option>
-            <option value="archived">Archived</option>
-          </select>
-          <input type="file" name="mediaAttachment" multiple onChange={handleFileChange} className="mb-2 p-2 border rounded w-full" />
-  
-          <div className="mb-4">
-            <label className="block mb-2">Contributor</label>
-            <div className="flex items-center mb-2">
-              <input type="radio" name="contributorType" value="existing" checked={isExistingContributor} onChange={() => setIsExistingContributor(true)} />
-              <span className="ml-2">Existing Contributor</span>
-            </div>
-            <div className="flex items-center mb-2">
-              <input type="radio" name="contributorType" value="new" checked={!isExistingContributor} onChange={() => setIsExistingContributor(false)} />
-              <span className="ml-2">New Contributor</span>
-            </div>
-          </div>
-  
-          {isExistingContributor ? (
-            <select name="contributorID" onChange={(e) => setSelectedContributorID(e.target.value)} className="mb-2 p-2 border rounded w-full">
-              <option value="">Select Contributor</option>
-              {existingContributors.map((contributor) => (
-                <option key={contributor.id} value={contributor.id}>
-                  {contributor.contributorName} - {contributor.phone}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <>
-              <input type="text" name="contributorName" placeholder="Contributor Name" onChange={handleContributorChange} className="mb-2 p-2 border rounded w-full" />
-              <input type="text" name="phone" placeholder="Phone" onChange={handleContributorChange} className="mb-2 p-2 border rounded w-full" />
-              <input type="text" name="email" placeholder="Email" onChange={handleContributorChange} className="mb-2 p-2 border rounded w-full" />
-              <input type="text" name="description" placeholder="Description" onChange={handleContributorChange} className="mb-2 p-2 border rounded w-full" />
-            </>
-          )}
-  
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 w-full">Add Item</button>
-          {message && <p className="mt-4 text-center">{message}</p>}
-        </form>
-      </div>
-    );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
-  
-  export default AddItemForm;
+
+  const handleFileChange = (e) => {
+    setMediaAttachment(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    data.append("contributor[contributorName]", formData.contributorName);
+    data.append("contributor[phone]", formData.phone);
+    data.append("contributor[email]", formData.email);
+    data.append("contributor[description]", formData.description);
+    data.append("itemDetails[title]", formData.title);
+    data.append("itemDetails[description]", formData.itemDescription);
+    data.append("itemDetails[location]", formData.location);
+    data.append("itemDetails[latitude]", formData.latitude);
+    data.append("itemDetails[longitude]", formData.longitude);
+
+    formData.categories.forEach((category) =>
+      data.append("categories[]", category)
+    );
+    formData.tags.forEach((tag) => data.append("tags[]", tag));
+    if (mediaAttachment) {
+      data.append("mediaAttachment", mediaAttachment);
+    }
+
+    try {
+      const response = await axios.post("/items/add", data);
+      setMessage("Item added successfully!"); // Success message
+      console.log("Item added successfully:", response.data);
+    } catch (error) {
+      setMessage("Error adding item."); // Error message
+      console.error("Error adding item:", error);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center">Add Item</h2>
+      {/* Display message */}
+      {message && (
+        <div
+          className={`mb-6 text-center py-2 px-4 rounded ${
+            message.includes("successfully")
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {message}
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+        {/* Contributor Information */}
+        <div>
+          <label htmlFor="contributorName" className="block font-medium mb-2">
+            Contributor Name
+          </label>
+          <input
+            id="contributorName"
+            type="text"
+            name="contributorName"
+            value={formData.contributorName}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="phone" className="block font-medium mb-2">
+            Phone
+          </label>
+          <input
+            id="phone"
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="email" className="block font-medium mb-2">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="description" className="block font-medium mb-2">
+            Contributor Description
+          </label>
+          <input
+            id="description"
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+
+        {/* Item Details */}
+        <div>
+          <label htmlFor="title" className="block font-medium mb-2">
+            Item Title
+          </label>
+          <input
+            id="title"
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div className="col-span-2">
+          <label htmlFor="itemDescription" className="block font-medium mb-2">
+            Item Description
+          </label>
+          <textarea
+            id="itemDescription"
+            name="itemDescription"
+            value={formData.itemDescription}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          ></textarea>
+        </div>
+        <div>
+          <label htmlFor="location" className="block font-medium mb-2">
+            Location
+          </label>
+          <input
+            id="location"
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="latitude" className="block font-medium mb-2">
+            Latitude
+          </label>
+          <input
+            id="latitude"
+            type="text"
+            name="latitude"
+            value={formData.latitude}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="longitude" className="block font-medium mb-2">
+            Longitude
+          </label>
+          <input
+            id="longitude"
+            type="text"
+            name="longitude"
+            value={formData.longitude}
+            onChange={handleChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+
+        {/* Categories and Tags */}
+        <div>
+          <label htmlFor="categories" className="block font-medium mb-2">
+            Categories (comma separated)
+          </label>
+          <input
+            id="categories"
+            type="text"
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                categories: e.target.value.split(","),
+              })
+            }
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+        <div>
+          <label htmlFor="tags" className="block font-medium mb-2">
+            Tags (comma separated)
+          </label>
+          <input
+            id="tags"
+            type="text"
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                tags: e.target.value.split(","),
+              })
+            }
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+
+        {/* Media Attachment */}
+        <div className="col-span-2">
+          <label htmlFor="mediaAttachment" className="block font-medium mb-2">
+            Media Attachment
+          </label>
+          <input
+            id="mediaAttachment"
+            type="file"
+            onChange={handleFileChange}
+            className="p-2 border border-gray-300 rounded w-full"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div className="col-span-2">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          >
+            Add Item
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default AddItem;
