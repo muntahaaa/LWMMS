@@ -56,7 +56,8 @@ const Item = sequelize.define('Item', {
     references: {
       model: 'Contributors',
       key: 'id'
-    }
+    },
+    onDelete: 'SET NULL',
   },
   mediaLocation: {
     type: Sequelize.TEXT,

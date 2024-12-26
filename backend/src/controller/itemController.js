@@ -244,27 +244,52 @@ const getAllByTag = async (req, res) => {
   };
   
 
-const getItemById = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-
-
-    if (!id) {
-        return next(new AppError('Item ID is required', 400));
+  const getItemById = async (req, res) => {
+    try {
+       
+        const { id } = req.params;
+  
+        // Check if the id is provided
+        if (!id) {
+            return res.status(400).json({ message: 'Item ID is required' });
+        }
+  
+      
+        const item = await Item.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Category,
+                    through: { attributes: [] }, 
+                    attributes: ['id', 'name'], 
+                },
+                {
+                    model: Contributor,
+                    attributes: ['contributorName', 'phone'],
+                },
+                {
+                    model: Tag,
+                    through: { attributes: [] }, 
+                    attributes: ['id', 'name'], // Only include necessary tag fields
+                },
+            ],
+        });
+  
+      
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found with the given ID' });
+        }
+  
+       
+        return res.status(200).json({
+            status: 'success',
+            data: item,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
-
-
-    const item = await Item.findByPk(id);
-
-
-    if (!item) {
-        return next(new AppError('No item found with the specified ID', 404));
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: item,
-    });
-});
+  };
 
 const getItemsByTitle = async (req, res) => {
   try {
@@ -375,53 +400,139 @@ const getItemByContributorName = async (req, res) => {
 
 
 const updateItem = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const updates = req.body;
-
-    if (!id) {
-        return next(new AppError('Item ID is required', 400));
+    const { contributor, itemDetails, categories, tags } = req.body;
+    const itemId = req.params.id;
+  
+    if (!itemId) {
+        return next(new AppError('Item ID is required for update', 400));
     }
-    const item = await Item.findByPk(id);
-
-
+  
+    // Fetch the item
+    const item = await Item.findByPk(itemId);
     if (!item) {
-        return next(new AppError('No item found with the specified ID', 404));
+        return next(new AppError('Item not found', 404));
     }
-
-
-    await item.update(updates);
-
+  
+    // Handle contributor update or creation
+    let updatedContributor;
+    if (contributor?.contributorName && contributor?.phone) {
+        updatedContributor = await Contributor.findOne({
+            where: {
+                contributorName: contributor.contributorName,
+                phone: contributor.phone,
+            },
+        });
+  
+        if (!updatedContributor) {
+            updatedContributor = await Contributor.create(contributor);
+        } else {
+            await updatedContributor.update(contributor); // Update existing contributor
+        }
+    } else {
+        return next(new AppError('Contributor name and phone are required', 400));
+    }
+  
+    // Update item details
+    const updatedDetails = {
+        ...itemDetails,
+        contributorID: updatedContributor.id,
+        mediaLocation: req.file ? req.file.path : item.mediaLocation,
+    };
+  
+    await item.update(updatedDetails);
+  
+    // Update categories (optimize to avoid redundancy)
+    if (categories && Array.isArray(categories)) {
+        await ItemCategories.destroy({ where: { itemId } });
+  
+        const uniqueCategories = [...new Set(categories)]; // Remove duplicates
+        for (const categoryName of uniqueCategories) {
+            const [category] = await Category.findOrCreate({ where: { name: categoryName } });
+            await ItemCategories.create({ itemId, categoryId: category.id });
+        }
+    }
+  
+    // Update tags (optimize to avoid redundancy)
+    if (tags && Array.isArray(tags)) {
+        await ItemTags.destroy({ where: { itemId } });
+  
+        const uniqueTags = [...new Set(tags)]; // Remove duplicates
+        for (const tagName of uniqueTags) {
+            const [tag] = await Tag.findOrCreate({ where: { name: tagName } });
+            await ItemTags.create({ itemId, tagId: tag.id });
+        }
+    }
+  
     res.status(200).json({
         status: 'success',
+        message: 'Item updated successfully',
         data: item,
     });
-});
-
-const deleteItem = catchAsync(async (req, res, next) => {
+  });
+  
+  
+  
+  
+  const deleteItem = catchAsync(async (req, res, next) => {
     const { id } = req.params;
-
-
+  
+    // Step 1: Validate the Item ID
     if (!id) {
-        return next(new AppError('Item ID is required', 400));
+        return next(new AppError('Item ID is required for deletion', 400));
     }
-
-
-    const item = await Item.findByPk(id);
-
-
-    if (!item) {
-        return next(new AppError('No item found with the specified ID', 404));
-    }
-
-
-    await item.destroy();
-
-    res.status(204).json({
-        status: 'success',
-        data: null,
+  
+    // Step 2: Find the Item to ensure it exists
+    const item = await Item.findOne({
+        where: { id },
+        include: [
+            { model: Contributor, attributes: ['id', 'contributorName', 'phone'] },
+            { model: Category, through: { attributes: [] } },
+            { model: Tag, through: { attributes: [] } },
+        ],
     });
-});
-
+  
+    if (!item) {
+        return next(new AppError('Item not found', 404));
+    }
+  
+    // Step 3: Handle Junction Table Entries (ItemCategories and ItemTags)
+    if (item.Categories && item.Categories.length > 0) {
+        for (const category of item.Categories) {
+            await ItemCategories.destroy({ where: { itemId: item.id, categoryId: category.id } });
+        }
+    }
+  
+    if (item.Tags && item.Tags.length > 0) {
+        for (const tag of item.Tags) {
+            await ItemTags.destroy({ where: { itemId: item.id, tagId: tag.id } });
+        }
+    }
+  
+    // Step 4: Handle Contributor
+    // Only soft-delete the contributor if this is their last associated item
+    const itemCountForContributor = await Item.count({
+        where: { contributorID: item.contributorID },
+    });
+  
+    if (itemCountForContributor === 1) {
+        const contributor = await Contributor.findOne({ where: { id: item.contributorID } });
+        if (contributor) {
+            await contributor.destroy();
+        }
+    }
+  
+    // Step 5: Soft Delete the Item
+    await item.destroy();
+  
+    res.status(200).json({
+        status: 'success',
+        message: 'Item and related records successfully soft deleted',
+    });
+  });
+  
+  
+  
+  
 
 const getItemsByContributor = catchAsync(async (req, res, next) => {
     const { contributorName, phone } = req.query;

@@ -12,20 +12,19 @@ itemRouter.use(bodyParser.json());
 itemRouter.use(cors());
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+  destination: (req, file, cb) => {
       const uploadPath = 'item-media-uploads/';
-      // Check if the directory exists, if not, create it
       if (!fs.existsSync(uploadPath)) {
-        fs.mkdirSync(uploadPath, { recursive: true });
+          fs.mkdirSync(uploadPath, { recursive: true });
       }
       cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-      const contributorName = req.body.contributor.contributorName.replace(/\s+/g, '_'); // Replace spaces with underscores
-      const title = req.body.itemDetails.title.replace(/\s+/g, '_'); // Replace spaces with underscores
+  },
+  filename: (req, file, cb) => {
+      const contributorName = req.body.contributor?.contributorName?.replace(/\s+/g, '_') || 'Unknown';
+      const title = req.body.itemDetails?.title?.replace(/\s+/g, '_') || 'Untitled';
       cb(null, `${contributorName}_${title}${path.extname(file.originalname)}`);
-    }
-  });
+  }
+});
   
   
   const upload = multer({ storage });
@@ -38,9 +37,9 @@ itemRouter.get('/get-all-by-category',itemController.getAllByCategory);
 itemRouter.get('/get-all-by-tag',itemController.getAllByTag);
 itemRouter.get('/get-by-title',itemController.getItemsByTitle);
 itemRouter.get('/get-by-contributorName',itemController.getItemByContributorName);
-itemRouter.get('/get-all-by-id/:id', itemController.getItemById);
+itemRouter.get('/:id', itemController.getItemById);
 //update
-itemRouter.patch('/update/:id',itemController.updateItem);
+itemRouter.put('/update/:id', upload.single('mediaAttachment'), itemController.updateItem);
 //delete
 itemRouter.delete('/delete/:id',itemController.deleteItem);
 
