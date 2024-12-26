@@ -6,6 +6,7 @@ const catchAsync = require('../src/utils/catchAsync');
 const protect = catchAsync(async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    //const authHeader = req.headers.authorization;
     token = req.headers.authorization.split(' ')[1];
     console.log('Token:', token); // Debugging statement
   }

@@ -1,5 +1,5 @@
 const express = require('express');
-const {createContributor, getContributorDetails} = require('../../src/controller/contributorController');
+const {createContributor, getContributorDetails, getAllContributors} = require('../../src/controller/contributorController');
 const {protect} = require('../../middleware/authMiddleware');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -10,8 +10,9 @@ ContributorRouter.use(bodyParser.json());
 
 // Define routes for contributors
 ContributorRouter.get('/contributor-detail',protect,getContributorDetails);
+ContributorRouter.get('/all',getAllContributors);
 //router.get('/:id', contributorController.getContributorById);
-ContributorRouter.post('/add', protect,createContributor);
+ContributorRouter.post('/add',protect,createContributor);
 //router.put('/:id', contributorController.updateContributor);
 //router.delete('/:id', contributorController.deleteContributor);
 

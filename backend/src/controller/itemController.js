@@ -19,7 +19,8 @@ const { Op } = require('sequelize');
 const createItem = catchAsync(async (req, res, next) => {
     const { contributor, itemDetails, categories, tags } = req.body;
 
-    const createdBy = req.user.id;
+    //const createdBy = req.user.id;
+    const createdBy=1;
 
 
 
@@ -103,69 +104,102 @@ const getAllItems = catchAsync(async (req, res, next) => {
     });
 });
 
-const getAllByCategory = catchAsync(async (req, res, next) => {
-    const { category } = req.query;
-
-
-    if (!category) {
-        return next(new AppError('Category is required', 400));
+const getAllByCategory = async (req, res) => {
+    try {
+      // Extract category name from the request parameters
+      const categoryName = req.query.categoryName;
+  
+      // Check if categoryName is provided
+      if (!categoryName) {
+        return res.status(400).json({ message: 'Category name is required' });
+      }
+  
+      // Find the category by name
+      const category = await Category.findOne({ where: { name: categoryName } });
+  
+      // Check if the category exists
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+  
+      // Fetch all item-category associations for this category
+      const itemCategories = await ItemCategories.findAll({
+        where: { categoryId: category.id },
+        attributes: ['itemId'],
+      });
+  
+      // Check if there are associated items
+      if (!itemCategories.length) {
+        return res.status(404).json({ message: 'No items found for this category' });
+      }
+  
+      // Extract item IDs from the associations
+      const itemIds = itemCategories.map((itemCategory) => itemCategory.itemId);
+  
+      // Fetch all items with the retrieved item IDs
+      const items = await Item.findAll({
+        where: { id: { [Op.in]: itemIds } },
+      });
+  
+      // Return the list of items
+      return res.status(200).json(items);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Server error', error: error.message });
     }
+  };
 
-
-    const categoryArray = Array.isArray(category) ? category : [category];
-
-
-    const items = await Item.findAll({
+const getAllByTag = async (req, res) => {
+    try {
+        const tagName = req.query.tagName;
+        // Get tag name from the request params
+  
+      // Step 1: Find the tag ID by the tag name
+      const tag = await Tag.findOne({ where: { name: tagName } });
+  
+      if (!tag) {
+        return res.status(404).json({ message: 'Tag not found' });
+      }
+  
+      // Step 2: Find all item IDs associated with the tag ID
+      const itemTags = await ItemTags.findAll({
+        where: { tagId: tag.id },
+        attributes: ['itemId'],
+      });
+  
+      if (!itemTags.length) {
+        return res.status(404).json({ message: 'No items found for this tag' });
+      }
+  
+      const itemIds = itemTags.map((itemTag) => itemTag.itemId);
+  
+      // Step 3: Fetch all items by the item IDs
+      const items = await Item.findAll({
         where: {
-            category: {
-                [Op.contains]: categoryArray,
-            },
+          id: {
+            [Op.in]: itemIds,
+          },
         },
-    });
-
-    if (!items.length) {
-        return next(new AppError('No items found for the specified category', 404));
+        include: [
+          {
+            model: Tag,
+            through: { attributes: [] }, // Avoid returning ItemTags join table data
+          },
+        ],
+      });
+  
+      if (!items.length) {
+        return res.status(404).json({ message: 'No items found for this tag' });
+      }
+  
+      // Step 4: Return the items as the response
+      return res.status(200).json(items);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Server error', error: error.message });
     }
-
-    res.status(200).json({
-        status: 'success',
-        results: items.length,
-        data: items,
-    });
-});
-
-const getAllByTag = catchAsync(async (req, res, next) => {
-    const { tag } = req.query;
-
-
-    if (!tag) {
-        return next(new AppError('Tag is required', 400));
-    }
-
-
-    const tagsArray = Array.isArray(tag) ? tag : [tag];
-
-
-    const items = await Item.findAll({
-        where: {
-            tags: {
-                [Op.contains]: tagsArray,
-            },
-        },
-    });
-
-
-    if (!items || items.length === 0) {
-        return next(new AppError('No items found for the specified tag(s)', 404));
-    }
-
-
-    res.status(200).json({
-        status: 'success',
-        results: items.length,
-        data: items,
-    });
-});
+  };
+  
 
 const getItemById = catchAsync(async (req, res, next) => {
     const { id } = req.params;

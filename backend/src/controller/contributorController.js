@@ -55,7 +55,21 @@ const getContributorDetails = catchAsync(async (req, res, next) => {
     });
   });
   
+  const getAllContributors = catchAsync(async (req, res, next) => {
+    const contributors = await Contributor.findAll();
+  
+    if (!contributors) {
+      return next(new AppError('No contributors found', 404));
+    }
+  
+    res.status(200).json({
+      status: 'success',
+      data: {
+        contributors
+      }
+    });
+  });
   
   
 
-module.exports= { createContributor, getContributorDetails};
+module.exports= { createContributor, getContributorDetails, getAllContributors};
