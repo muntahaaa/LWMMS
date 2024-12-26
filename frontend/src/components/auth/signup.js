@@ -7,14 +7,15 @@ const Signup = () => {
     Name: '',
     Email: '',
     Password: '',
-    RoleID: '',
+    roleName: 'Admin',
   });
 
-  const [roles, setRoles] = useState([]);
+  //const [roles, setRoles] = useState([]);
   const [message, setMessage] = useState('');
+  //const [roles, setRoles] = useState('Visitor');
   const navigate = useNavigate();
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchRoles = async () => {
       try {
         const response = await axios.get('/access/view-roles');
@@ -26,7 +27,9 @@ const Signup = () => {
     };
 
     fetchRoles();
-  }, []);
+  }, []);  */
+ 
+
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -52,14 +55,14 @@ const Signup = () => {
         <input type="text" name="Name" placeholder="Name" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
         <input type="email" name="Email" placeholder="Email" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
         <input type="password" name="Password" placeholder="Password" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-        <select name="roleName" onChange={handleChange} className="mb-2 p-2 border rounded w-full">
+       {/* <select name="roleName" onChange={handleChange} className="mb-2 p-2 border rounded w-full">
           <option value="">Select Role</option>
           {roles.map((role) => (
             <option key={role.id} value={role.roleName}>
               {role.roleName}
             </option>
           ))}
-        </select>
+        </select>  */}
         <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 w-full">Signup</button>
         {message && <p className="mt-4 text-center">{message}</p>}
       </form>
