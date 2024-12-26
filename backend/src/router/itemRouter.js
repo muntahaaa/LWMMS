@@ -12,33 +12,36 @@ itemRouter.use(bodyParser.json());
 itemRouter.use(cors());
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = 'item-media-uploads/';
-    // Check if the directory exists, if not, create it
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
+    destination: (req, file, cb) => {
+      const uploadPath = 'item-media-uploads/';
+      // Check if the directory exists, if not, create it
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+      }
+      cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+      const contributorName = req.body.contributor.contributorName.replace(/\s+/g, '_'); // Replace spaces with underscores
+      const title = req.body.itemDetails.title.replace(/\s+/g, '_'); // Replace spaces with underscores
+      cb(null, `${contributorName}_${title}${path.extname(file.originalname)}`);
     }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const contributorName = req.body.contributor.contributorName.replace(/\s+/g, '_'); // Replace spaces with underscores
-    const title = req.body.itemDetails.title.replace(/\s+/g, '_'); // Replace spaces with underscores
-    cb(null, `${contributorName}_${title}${path.extname(file.originalname)}`);
-  }
-});
+  });
+  
+  
+  const upload = multer({ storage });
 
-
-const upload = multer({ storage });
-
-itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
+//itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
+itemRouter.get('/by-contributor',itemController.getItemsByContributor);
 itemRouter.post('/add',upload.single('mediaAttachment'), itemController.createItem);
-itemRouter.get('/get-all',protect,itemController.getAllItems);
+itemRouter.get('/get-all',itemController.getAllItems);
 itemRouter.get('/get-all-by-category',itemController.getAllByCategory);
-itemRouter.get('/get-all-by-tag',protect,itemController.getAllByTag);
-itemRouter.get('/get-all-by-id/:id',protect, itemController.getItemById);
+itemRouter.get('/get-all-by-tag',itemController.getAllByTag);
+itemRouter.get('/get-by-title',itemController.getItemsByTitle);
+itemRouter.get('/get-by-contributorName',itemController.getItemByContributorName);
+itemRouter.get('/get-all-by-id/:id', itemController.getItemById);
 //update
-itemRouter.patch('/update/:id', protect,itemController.updateItem);
+itemRouter.patch('/update/:id',itemController.updateItem);
 //delete
-itemRouter.delete('/delete/:id',protect,itemController.deleteItem);
+itemRouter.delete('/delete/:id',itemController.deleteItem);
 
 module.exports= itemRouter;

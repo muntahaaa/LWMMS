@@ -20,7 +20,7 @@ const createItem = catchAsync(async (req, res, next) => {
     const { contributor, itemDetails, categories, tags } = req.body;
 
     //const createdBy = req.user.id;
-    const createdBy=1;
+    const createdBy = 1;
 
 
 
@@ -88,66 +88,89 @@ const createItem = catchAsync(async (req, res, next) => {
 });
 
 const getAllItems = catchAsync(async (req, res, next) => {
-    const items = await Item.findAll({
-        include: [
-            {
-                model: Contributor,
-                attributes: ['contributorName', 'phone'],
-            },
-        ],
-    });
+  const items = await Item.findAll({
+      include: [
+          {
+              model: Contributor,
+              attributes: ['contributorName', 'phone'], // Include contributor details
+          },
+          {
+              model: Tag,
+              through: { attributes: [] }, // Avoid returning join table data for tags
+              attributes: ['id', 'name'], // Only include necessary tag fields
+          },
+          {
+              model: Category,
+              through: { attributes: [] }, // Avoid returning join table data for categories
+              attributes: ['id', 'name'], // Only include necessary category fields
+          },
+      ],
+  });
 
-    res.status(200).json({
-        status: 'success',
-        results: items.length,
-        data: items,
-    });
+  res.status(200).json({
+      status: 'success',
+      results: items.length,
+      data: items,
+  });
 });
 
+
 const getAllByCategory = async (req, res) => {
-    try {
+  try {
       // Extract category name from the request parameters
       const categoryName = req.query.categoryName;
-  
+
       // Check if categoryName is provided
       if (!categoryName) {
-        return res.status(400).json({ message: 'Category name is required' });
+          return res.status(400).json({ message: 'Category name is required' });
       }
-  
+
       // Find the category by name
       const category = await Category.findOne({ where: { name: categoryName } });
-  
+
       // Check if the category exists
       if (!category) {
-        return res.status(404).json({ message: 'Category not found' });
+          return res.status(404).json({ message: 'Category not found' });
       }
-  
-      // Fetch all item-category associations for this category
-      const itemCategories = await ItemCategories.findAll({
-        where: { categoryId: category.id },
-        attributes: ['itemId'],
-      });
-  
-      // Check if there are associated items
-      if (!itemCategories.length) {
-        return res.status(404).json({ message: 'No items found for this category' });
-      }
-  
-      // Extract item IDs from the associations
-      const itemIds = itemCategories.map((itemCategory) => itemCategory.itemId);
-  
-      // Fetch all items with the retrieved item IDs
+
+      // Fetch all items that belong to this category
       const items = await Item.findAll({
-        where: { id: { [Op.in]: itemIds } },
+          include: [
+              {
+                  model: Category,
+                  where: { id: category.id }, // Filter by category ID
+                  through: { attributes: [] }, // Avoid returning join table data
+                  attributes: ['id', 'name'], // Only include necessary category fields
+              },
+              {
+                  model: Contributor,
+                  attributes: ['contributorName', 'phone'], // Include contributor details
+              },
+              {
+                  model: Tag,
+                  through: { attributes: [] }, // Avoid returning join table data for tags
+                  attributes: ['id', 'name'], // Only include necessary tag fields
+              },
+          ],
       });
-  
+
+      // Check if items exist for this category
+      if (!items.length) {
+          return res.status(404).json({ message: 'No items found for this category' });
+      }
+
       // Return the list of items
-      return res.status(200).json(items);
-    } catch (error) {
+      return res.status(200).json({
+          status: 'success',
+          results: items.length,
+          data: items,
+      });
+  } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Server error', error: error.message });
-    }
-  };
+  }
+};
+
 
 const getAllByTag = async (req, res) => {
     try {
@@ -182,10 +205,20 @@ const getAllByTag = async (req, res) => {
         },
         include: [
           {
-            model: Tag,
-            through: { attributes: [] }, // Avoid returning ItemTags join table data
+              model: Contributor,
+              attributes: ['contributorName', 'phone'], // Include contributor details
           },
-        ],
+          {
+              model: Tag,
+              through: { attributes: [] }, // Avoid returning join table data for tags
+              attributes: ['id', 'name'], // Only include necessary tag fields
+          },
+          {
+              model: Category,
+              through: { attributes: [] }, // Avoid returning join table data for categories
+              attributes: ['id', 'name'], // Only include necessary category fields
+          },
+      ],
       });
   
       if (!items.length) {
@@ -193,7 +226,11 @@ const getAllByTag = async (req, res) => {
       }
   
       // Step 4: Return the items as the response
-      return res.status(200).json(items);
+      return res.status(200).json({
+        status: 'success',
+        results: items.length,
+        data: items,
+    });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Server error', error: error.message });
@@ -222,6 +259,114 @@ const getItemById = catchAsync(async (req, res, next) => {
         data: item,
     });
 });
+
+const getItemsByTitle = async (req, res) => {
+  try {
+      // Extract the title from the request query
+      const title = req.query.title;
+
+      // Check if the title is provided
+      if (!title) {
+          return res.status(400).json({ message: 'Title is required' });
+      }
+
+      // Fetch items that match the provided title
+      const items = await Item.findAll({
+          where: { title: { [Op.like]: `%${title}%` } }, // Use LIKE for partial matches
+          include: [
+              {
+                  model: Category,
+                  through: { attributes: [] }, // Avoid returning join table data
+                  attributes: ['id', 'name'], // Only include necessary category fields
+              },
+              {
+                  model: Contributor,
+                  attributes: ['contributorName', 'phone'], // Include contributor details
+              },
+              {
+                  model: Tag,
+                  through: { attributes: [] }, // Avoid returning join table data
+                  attributes: ['id', 'name'], // Only include necessary tag fields
+              },
+          ],
+      });
+
+      // Check if items are found
+      if (!items.length) {
+          return res.status(404).json({ message: 'No items found with the given title' });
+      }
+
+      // Return the list of items
+      return res.status(200).json({
+          status: 'success',
+          results: items.length,
+          data: items,
+      });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const getItemByContributorName = async (req, res) => {
+  try {
+      // Extract the contributor's name from the request query
+      const contributorName = req.query.contributorName;
+
+      // Check if the contributor name is provided
+      if (!contributorName) {
+          return res.status(400).json({ message: 'Contributor name is required' });
+      }
+
+      // Find the contributor by name
+      const contributor = await Contributor.findOne({
+          where: { contributorName: { [Op.like]: `%${contributorName}%` } }, // Use LIKE for partial matches
+      });
+
+      // Check if the contributor exists
+      if (!contributor) {
+          return res.status(404).json({ message: 'Contributor not found' });
+      }
+
+      // Fetch all items associated with the contributor's ID
+      const items = await Item.findAll({
+          where: { contributorID: contributor.id },
+          include: [
+              {
+                  model: Category,
+                  through: { attributes: [] }, // Avoid returning join table data
+                  attributes: ['id', 'name'], // Only include necessary category fields
+              },
+              {
+                  model: Contributor,
+                  attributes: ['id', 'contributorName', 'phone'], // Include contributor details
+              },
+              {
+                  model: Tag,
+                  through: { attributes: [] }, // Avoid returning join table data
+                  attributes: ['id', 'name'], // Only include necessary tag fields
+              },
+          ],
+      });
+
+      // Check if items are found
+      if (!items.length) {
+          return res.status(404).json({ message: 'No items found for this contributor' });
+      }
+
+      // Return the list of items
+      return res.status(200).json({
+          status: 'success',
+          results: items.length,
+          data: items,
+      });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
 
 const updateItem = catchAsync(async (req, res, next) => {
     const { id } = req.params;
@@ -315,5 +460,5 @@ const getItemsByContributor = catchAsync(async (req, res, next) => {
 module.exports = {
     createItem, getAllItems, getAllByCategory,
     getAllByTag, getItemById, updateItem, deleteItem,
-    getItemsByContributor
+    getItemsByContributor,getItemsByTitle,getItemByContributorName
 };
