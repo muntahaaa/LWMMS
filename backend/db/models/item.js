@@ -42,7 +42,8 @@ const Item = sequelize.define('Item', {
     defaultValue: '-',
   },
   displayStatus: {
-    type: Sequelize.ENUM('displayed', 'archived')
+    type: Sequelize.ENUM('displayed', 'archived'),
+   
   },
   createdBy: {
     type: Sequelize.INTEGER,

@@ -14,7 +14,7 @@ const path = require('path');
 
 
 const app = express();
-app.use('/item-media-uploads', express.static(path.join(__dirname, 'item-media-uploads')));
+//app.use('/item-media-uploads', express.static(path.join(__dirname, 'item-media-uploads')));
 
 app.get('/', (req, res) => {
   res.send('LWMMS is working');
@@ -24,6 +24,12 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  '/item-media-uploads',
+  express.static(path.resolve(__dirname, '../item-media-uploads'))
+);
+app.use(cors({ origin: 'http://localhost:4000' })); // Allow requests from the frontend
 
 app.use('/auth', authRouter);
 app.use('/access',rolePermissionRouter);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axiosConfig";
 import { Link } from "react-router-dom";
 
-const ViewItems = () => {
+const ViewItems2 = () => {
   const [items, setItems] = useState([]); // All items
   const [searchQuery, setSearchQuery] = useState(""); // Search input value
   const [searchType, setSearchType] = useState("get-all"); // Search type (dropdown)
@@ -19,7 +19,7 @@ const ViewItems = () => {
       let url = `/items/${endpoint}`;
       if (endpoint === "get-by-title") {
         url = `/items/${endpoint}?title=${query}`;
-      }else if (endpoint === "get-by-contributorName") {
+      } else if (endpoint === "get-by-contributorName") {
         url = `/items/${endpoint}?contributorName=${query}`;
       } else if (endpoint === "get-all-by-tag") {
         url = `/items/${endpoint}?tagName=${query}`;
@@ -30,7 +30,7 @@ const ViewItems = () => {
       }
 
       const response = await axios.get(url);
-      setItems(response.data.data || []); // Fallback to empty array if data is null/undefined
+      setItems(response.data.data || []); // Callback to empty array if data is null/undefined
       setError(null); // Clear any previous errors
     } catch (error) {
       console.error("Error fetching items:", error);
@@ -95,6 +95,7 @@ const ViewItems = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.length > 0 ? (
           items.map((item) => (
+
             <div
               className="bg-white shadow rounded-lg p-4 flex flex-col"
               key={item.id}
@@ -108,32 +109,69 @@ const ViewItems = () => {
                 <strong>Contributor:</strong>{" "}
                 {item.Contributor?.contributorName || "N/A"}
               </p>
+
               <p className="text-sm text-gray-500 mb-1">
                 <strong>Categories:</strong>{" "}
-                
+
                 {item.Categories?.map((tag) => tag.name).join(", ") || "None"}
               </p>
               <p className="text-sm text-gray-500 mb-1">
                 <strong>Tags:</strong>{" "}
                 {item.Tags?.map((tag) => tag.name).join(", ") || "None"}
               </p>
-              {item.mediaLocation && (
-                <a
-                href={`http://localhost:3000/${item.mediaLocation}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {item.mediaLocation.endsWith('.docx') || item.mediaLocation.endsWith('.pdf') ? (
-                  <span className="text-blue-500 underline">View Document</span>
-                ) : (
-                  <img
-                    src={`http://localhost:3000/${item.mediaLocation}`}
-                    alt={item.title}
-                    className="w-full h-48 object-cover rounded-lg mt-2"
-                  />
-                )}
-              </a>
-              )}
+              
+             {item.mediaLocation && (
+                <>
+                  {/* Check for the file type */}
+                  {item.mediaLocation.startsWith('data:') ? (
+                    <>
+                      {/* Handle base64-encoded files */}
+                      {item.mediaLocation.includes('image') ? (
+                        // Display image
+                        <img
+                          src={item.mediaLocation}
+                          alt={item.title}
+                          className="w-full h-48 object-cover rounded-lg mt-2"
+                        />
+                      ) : (
+                        // Provide a download link for non-image files
+                        <a
+                          href={item.mediaLocation}
+                          download={item.title || 'file'}
+                          className="text-blue-500 underline mt-2"
+                        >
+                          Download {item.title || 'file'}
+                        </a>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {/* If the file is served via a backend API */}
+                      {item.mediaLocation.endsWith('.jpeg') || item.mediaLocation.endsWith('.png') ? (
+                        // Display image
+                        <img
+                          src={`http://localhost:3000/${item.mediaLocation}`}
+                          alt={item.title}
+                          className="w-full h-48 object-cover rounded-lg mt-2"
+                        />
+                      ) : (
+                        // Provide a link to open/download non-image files
+                        <a
+                          href={`http://localhost:3000/${item.mediaLocation}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 underline mt-2"
+                        >
+                          Open {item.title || 'file'}
+                        </a>
+                      )}
+                    </>
+                  )}
+                </>
+              )}     
+
+
+
               <div className="mt-4 flex justify-between">
                 <Link to={`/update-item/${item.id}`}>
                   <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
@@ -174,4 +212,4 @@ const ViewItems = () => {
   );
 };
 
-export default ViewItems;
+export default ViewItems2;

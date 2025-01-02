@@ -18,7 +18,7 @@ const fs = require('fs');
 
 
 const createItem = catchAsync(async (req, res, next) => {
-    const { contributor, itemDetails, categories, tags } = req.body;
+    const { contributor, itemDetails, categories, tags, displayStatus } = req.body;
 
     //const createdBy = req.user.id;
     const createdBy = 1;
@@ -44,12 +44,16 @@ const createItem = catchAsync(async (req, res, next) => {
         ...itemDetails,
         category: Array.isArray(itemDetails.category) ? itemDetails.category : [],
         tags: Array.isArray(itemDetails.tags) ? itemDetails.tags : [],
+        displayStatus: displayStatus ,
     };
 
     //const mediaLocation = req.file ? req.file.path.replace(/\\/g, '/') : null;
-    const mediaLocation = req.file
-        ? `data:${req.file.mimetype};base64,${fs.readFileSync(req.file.path).toString('base64')}`
-        : null;
+   
+    const mediaLocation = req.file ? req.file.path : null;
+   
+    // const mediaLocation = req.file
+    //     ? `data:${req.file.mimetype};base64,${fs.readFileSync(req.file.path).toString('base64')}`
+    //     : null;
 
 
     
@@ -57,7 +61,8 @@ const createItem = catchAsync(async (req, res, next) => {
         ...newItemDetails,
         contributorID: existingContributor.id,
         createdBy,
-        mediaLocation
+        mediaLocation,
+        displayStatus: displayStatus,
     });
     if (categories && categories.length > 0) {
         for (const categoryName of categories) {
@@ -86,6 +91,7 @@ const createItem = catchAsync(async (req, res, next) => {
           });
         }
       }
+      console.log('Received displayStatus:', req.body.displayStatus);
 
     res.status(201).json({
         status: 'success in creating item',

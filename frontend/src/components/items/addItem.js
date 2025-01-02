@@ -14,16 +14,20 @@ const AddItem = () => {
     longitude: "",
     categories: [],
     tags: [],
+    diplayStatus: "displayed",
   });
 
   const [mediaAttachment, setMediaAttachment] = useState(null);
-  const [message, setMessage] = useState(""); // For displaying messages
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "radio" ? value : value,
+    });
   };
-
+  
   const handleFileChange = (e) => {
     setMediaAttachment(e.target.files[0]);
   };
@@ -41,6 +45,7 @@ const AddItem = () => {
     data.append("itemDetails[location]", formData.location);
     data.append("itemDetails[latitude]", formData.latitude);
     data.append("itemDetails[longitude]", formData.longitude);
+    data.append("displayStatus", formData.displayStatus);
 
     formData.categories.forEach((category) =>
       data.append("categories[]", category)
@@ -52,11 +57,11 @@ const AddItem = () => {
 
     try {
       const response = await axios.post("/items/add", data);
-      setMessage("Item added successfully!"); // Success message
-      console.log("Item added successfully:", response.data);
+      setMessage("Item added successfully!"); 
+      //console.log("Item added successfully:", response.data);
     } catch (error) {
-      setMessage("Error adding item."); // Error message
-      console.error("Error adding item:", error);
+      setMessage("Error adding item.");
+      //console.error("Error adding item:", error);
     }
   };
 
@@ -235,6 +240,35 @@ const AddItem = () => {
             className="border border-gray-300 rounded-md p-2 w-full"
           />
         </div>
+
+        <div className="col-span-2">
+              <label className="block font-medium mb-2">Display Status</label>
+              <div className="flex items-center mb-2">
+                <input
+                  type="radio"
+                  id="displayed"
+                  name="displayStatus"
+                  value="displayed"
+                  checked={formData.displayStatus === "displayed"}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <label htmlFor="displayed" className="mr-4">Displayed</label>
+                
+                <input
+                  type="radio"
+                  id="archived"
+                  name="displayStatus"
+                  value="archived"
+                  checked={formData.displayStatus === "archived"}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <label htmlFor="archived">Archived</label>
+              </div>
+            </div>
+         
+
         <div className="flex flex-col">
           <label htmlFor="mediaAttachment" className="text-sm font-semibold mb-2">
             Attach Media
