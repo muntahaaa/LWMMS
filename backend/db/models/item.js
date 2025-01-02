@@ -4,6 +4,7 @@ const sequelize = require('../../config/database');
 const Role = require('./role');
 const Contributor = require('./contributor');
 const User = require('./user');
+//const Media = require('./media'); // Import Media model
 
 const Item = sequelize.define('Item', {
   id: {
@@ -42,8 +43,7 @@ const Item = sequelize.define('Item', {
     defaultValue: '-',
   },
   displayStatus: {
-    type: Sequelize.ENUM('displayed', 'archived'),
-   
+    type: Sequelize.ENUM('displayed', 'archived')
   },
   createdBy: {
     type: Sequelize.INTEGER,
@@ -61,7 +61,7 @@ const Item = sequelize.define('Item', {
     onDelete: 'SET NULL',
   },
   mediaLocation: {
-    type: Sequelize.TEXT,
+    type: Sequelize.ARRAY(Sequelize.STRING),
     defaultValue: '-',
 
   },
@@ -101,5 +101,6 @@ User.hasMany(Item, {
 Item.belongsTo(User, {
   foreignKey: 'createdBy'
 });
+
 
 module.exports = Item;

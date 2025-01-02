@@ -14,22 +14,29 @@ const AddItem = () => {
     longitude: "",
     categories: [],
     tags: [],
-    diplayStatus: "displayed",
+    displayStatus: "displayed",
   });
 
-  const [mediaAttachment, setMediaAttachment] = useState(null);
-  const [message, setMessage] = useState("");
+  const [mediaAttachment, setMediaAttachment] = useState([]);
+  //const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
     setFormData({
       ...formData,
       [name]: type === "radio" ? value : value,
     });
   };
-  
+
   const handleFileChange = (e) => {
-    setMediaAttachment(e.target.files[0]);
+    const selectedFiles = Array.from(e.target.files); // Convert FileList to Array
+    setMediaAttachment((prevFiles) => {
+      const existingFileNames = prevFiles.map((file) => file.name); // Avoid duplicates
+      const newFiles = selectedFiles.filter(
+        (file) => !existingFileNames.includes(file.name)
+      );
+      return [...prevFiles, ...newFiles];
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -51,17 +58,21 @@ const AddItem = () => {
       data.append("categories[]", category)
     );
     formData.tags.forEach((tag) => data.append("tags[]", tag));
-    if (mediaAttachment) {
-      data.append("mediaAttachment", mediaAttachment);
+    if (Array.isArray(mediaAttachment) && mediaAttachment.length > 0) {
+      mediaAttachment.forEach((file) => {
+        data.append("mediaAttachments", file); // Append each file
+      });
+    } else {
+      console.error("mediaAttachment is not an array:", mediaAttachment);
     }
 
     try {
       const response = await axios.post("/items/add", data);
-      setMessage("Item added successfully!"); 
-      //console.log("Item added successfully:", response.data);
+      console.log("Item added successfully:", response.data);
+      alert("Item added successfully!");
     } catch (error) {
-      setMessage("Error adding item.");
-      //console.error("Error adding item:", error);
+      console.error("Error adding item:", error);
+      alert("Error adding item");
     }
   };
 
@@ -71,7 +82,10 @@ const AddItem = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="contributorName" className="text-sm font-semibold mb-2">
+            <label
+              htmlFor="contributorName"
+              className="text-sm font-semibold mb-2"
+            >
               Contributor Name
             </label>
             <input
@@ -145,7 +159,10 @@ const AddItem = () => {
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="itemDescription" className="text-sm font-semibold mb-2">
+            <label
+              htmlFor="itemDescription"
+              className="text-sm font-semibold mb-2"
+            >
               Item Description
             </label>
             <textarea
@@ -240,46 +257,77 @@ const AddItem = () => {
             className="border border-gray-300 rounded-md p-2 w-full"
           />
         </div>
-
         <div className="col-span-2">
-              <label className="block font-medium mb-2">Display Status</label>
-              <div className="flex items-center mb-2">
-                <input
-                  type="radio"
-                  id="displayed"
-                  name="displayStatus"
-                  value="displayed"
-                  checked={formData.displayStatus === "displayed"}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                <label htmlFor="displayed" className="mr-4">Displayed</label>
-                
-                <input
-                  type="radio"
-                  id="archived"
-                  name="displayStatus"
-                  value="archived"
-                  checked={formData.displayStatus === "archived"}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                <label htmlFor="archived">Archived</label>
-              </div>
-            </div>
-         
+          <label className="block font-medium mb-2">Display Status</label>
+          <div className="flex items-center mb-2">
+            <input
+              type="radio"
+              id="displayed"
+              name="displayStatus"
+              value="displayed"
+              //checked={formData.displayStatus === "displayed"}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <label htmlFor="displayed" className="mr-4">
+              Displayed
+            </label>
 
-        <div className="flex flex-col">
-          <label htmlFor="mediaAttachment" className="text-sm font-semibold mb-2">
-            Attach Media
+            <input
+              type="radio"
+              id="archived"
+              name="displayStatus"
+              value="archived"
+              //checked={formData.displayStatus === "archived"}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <label htmlFor="archived">Archived</label>
+          </div>
+        </div>
+        <div className="flex flex-col mt-4">
+          <label
+            htmlFor="mediaAttachments"
+            className="text-sm font-semibold mb-2"
+          >
+            Attach Media (Multiple Files Allowed)
           </label>
           <input
             type="file"
-            id="mediaAttachment"
+            id="mediaAttachments"
+            multiple // Enable multiple file uploads
             onChange={handleFileChange}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
+
+          {/* Display Selected Files */}
+          {mediaAttachment.length > 0 && (
+            <div className="mt-2">
+              <h3 className="text-sm font-semibold mb-2">
+                Selected Media Files
+              </h3>
+              <ul className="list-disc pl-4">
+                {mediaAttachment.map((file, index) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <span>{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setMediaAttachment((prevFiles) =>
+                          prevFiles.filter((_, i) => i !== index)
+                        )
+                      }
+                      className="text-red-500 ml-4"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+
         <div className="text-center">
           <button
             type="submit"
@@ -289,7 +337,6 @@ const AddItem = () => {
           </button>
         </div>
       </form>
-      {message && <p className="mt-4 text-center">{message}</p>}
     </div>
   );
 };

@@ -52,8 +52,8 @@ module.exports = {
         }
       },
        mediaLocation: {
-          type: Sequelize.TEXT,
-          defaultValue: '-',
+          type: Sequelize.ARRAY(Sequelize.STRING),
+          defaultValue: ['-'],
           
        },
       createdAt: {

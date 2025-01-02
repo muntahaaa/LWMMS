@@ -7,19 +7,18 @@ const ViewItems = () => {
   const [searchQuery, setSearchQuery] = useState(""); // Search input value
   const [searchType, setSearchType] = useState("get-all"); // Search type (dropdown)
   const [error, setError] = useState(null); // To handle and display errors
+  const [mediaIndexes, setMediaIndexes] = useState({}); // Track currentMediaIndex for each item
 
-  // Fetch all items on component mount
   useEffect(() => {
     fetchItems();
   }, []);
 
-  // Fetch items based on the endpoint and query
   const fetchItems = async (endpoint = "get-all", query = "") => {
     try {
       let url = `/items/${endpoint}`;
       if (endpoint === "get-by-title") {
         url = `/items/${endpoint}?title=${query}`;
-      }else if (endpoint === "get-by-contributorName") {
+      } else if (endpoint === "get-by-contributorName") {
         url = `/items/${endpoint}?contributorName=${query}`;
       } else if (endpoint === "get-all-by-tag") {
         url = `/items/${endpoint}?tagName=${query}`;
@@ -30,16 +29,25 @@ const ViewItems = () => {
       }
 
       const response = await axios.get(url);
-      setItems(response.data.data || []); // Fallback to empty array if data is null/undefined
-      setError(null); // Clear any previous errors
+      setItems(response.data.data || []);
+      setMediaIndexes({}); // Reset indexes when new items are fetched
+      setError(null);
     } catch (error) {
       console.error("Error fetching items:", error);
       setError("Failed to fetch items. Please try again later.");
-      setItems([]); // Clear items in case of an error
+      setItems([]);
     }
   };
 
-  // Handle search button click
+  const handleMediaNavigation = (itemId, direction) => {
+    setMediaIndexes((prevIndexes) => {
+      const currentIndex = prevIndexes[itemId] || 0;
+      const newIndex =
+        direction === "left" ? currentIndex - 1 : currentIndex + 1;
+      return { ...prevIndexes, [itemId]: newIndex };
+    });
+  };
+
   const handleSearch = () => {
     if (searchType === "get-all-by-tag") {
       fetchItems("get-all-by-tag", searchQuery);
@@ -88,82 +96,134 @@ const ViewItems = () => {
         </button>
       </div>
 
-      {/* Error Message  {item.Categories?.join(", ") || "None"}*/}
+      {/* Error Message */}
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       {/* Items Display Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.length > 0 ? (
-          items.map((item) => (
-            <div
-              className="bg-white shadow rounded-lg p-4 flex flex-col"
-              key={item.id}
-            >
-              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-              <p className="text-gray-700 mb-2">{item.description}</p>
-              <p className="text-sm text-gray-500 mb-1">
-                <strong>Location:</strong> {item.location || "N/A"}
-              </p>
-              <p className="text-sm text-gray-500 mb-1">
-                <strong>Contributor:</strong>{" "}
-                {item.Contributor?.contributorName || "N/A"}
-              </p>
-              <p className="text-sm text-gray-500 mb-1">
-                <strong>Categories:</strong>{" "}
-                
-                {item.Categories?.map((tag) => tag.name).join(", ") || "None"}
-              </p>
-              <p className="text-sm text-gray-500 mb-1">
-                <strong>Tags:</strong>{" "}
-                {item.Tags?.map((tag) => tag.name).join(", ") || "None"}
-              </p>
-              {item.mediaLocation && (
-                <a
-                href={`http://localhost:3000/${item.mediaLocation}`}
-                target="_blank"
-                rel="noopener noreferrer"
+          items.map((item) => {
+            const currentMediaIndex = mediaIndexes[item.id] || 0;
+
+            return (
+              <div
+                className="bg-white shadow rounded-lg p-4 flex flex-col"
+                key={item.id}
               >
-                {item.mediaLocation.endsWith('.docx') || item.mediaLocation.endsWith('.pdf') ? (
-                  <span className="text-blue-500 underline">View Document</span>
-                ) : (
-                  <img
-                    src={`http://localhost:3000/${item.mediaLocation}`}
-                    alt={item.title}
-                    className="w-full h-48 object-cover rounded-lg mt-2"
-                  />
+                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                <p className="text-gray-700 mb-2">{item.description}</p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Location:</strong> {item.location || "N/A"}
+                </p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Contributor:</strong>{" "}
+                  {item.Contributor?.contributorName || "N/A"}
+                </p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Categories:</strong>{" "}
+                  {item.Categories?.map((tag) => tag.name).join(", ") || "None"}
+                </p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Tags:</strong>{" "}
+                  {item.Tags?.map((tag) => tag.name).join(", ") || "None"}
+                </p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Display Status:</strong>{" "}
+                  { item.displayStatus || "N/A"}
+                </p>
+                {item.mediaLocation && item.mediaLocation.length > 0 && (
+                  <div className="relative w-full mb-4 flex justify-center items-center">
+                    {/* Media Preview Section */}
+                    <div className="flex justify-center items-center h-48">
+                      <a
+                        href={`http://localhost:3000/${item.mediaLocation[currentMediaIndex]}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        {item.mediaLocation[currentMediaIndex].endsWith(
+                          ".docx"
+                        ) ||
+                        item.mediaLocation[currentMediaIndex].endsWith(
+                          ".pdf"
+                        ) ||
+                        item.mediaLocation[currentMediaIndex].endsWith(
+                          ".pptx"
+                        ) ? (
+                          <span className="text-blue-500 underline flex items-center justify-center h-full">
+                            View Document {currentMediaIndex + 1}
+                          </span>
+                        ) : (
+                          <img
+                            src={`http://localhost:3000/${item.mediaLocation[currentMediaIndex]}`}
+                            alt={`Media ${currentMediaIndex + 1}`}
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+                        )}
+                      </a>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="absolute inset-0 flex justify-between items-center pointer-events-none">
+                      {/* Left Arrow */}
+                      {currentMediaIndex > 0 && (
+                        <button
+                          className="bg-gray-200 p-2 rounded-full hover:bg-gray-300 pointer-events-auto flex items-center justify-center"
+                          onClick={() => handleMediaNavigation(item.id, "left")}
+                          style={{ position: "absolute", left: "10px" }}
+                        >
+                          &lt;
+                        </button>
+                      )}
+                      {/* Right Arrow */}
+                      {currentMediaIndex < item.mediaLocation.length - 1 && (
+                        <button
+                          className="bg-gray-200 p-2 rounded-full hover:bg-gray-300 pointer-events-auto flex items-center justify-center"
+                          onClick={() =>
+                            handleMediaNavigation(item.id, "right")
+                          }
+                          style={{ position: "absolute", right: "10px" }}
+                        >
+                          &gt;
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 )}
-              </a>
-              )}
-              <div className="mt-4 flex justify-between">
-                <Link to={`/update-item/${item.id}`}>
-                  <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
-                    Update
+
+                <div className="mt-auto flex justify-between">
+                  <Link to={`/update-item/${item.id}`}>
+                    <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+                      Update
+                    </button>
+                  </Link>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Are you sure you want to delete this item?"
+                        )
+                      ) {
+                        axios
+                          .delete(`/items/delete/${item.id}`)
+                          .then(() => {
+                            alert("Item deleted successfully!");
+                            fetchItems(); // Refresh items after deletion
+                          })
+                          .catch((error) => {
+                            console.error("Error deleting item:", error);
+                            alert("Error deleting item.");
+                          });
+                      }
+                    }}
+                  >
+                    Delete
                   </button>
-                </Link>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                  onClick={() => {
-                    if (
-                      window.confirm("Are you sure you want to delete this item?")
-                    ) {
-                      axios
-                        .delete(`/items/delete/${item.id}`)
-                        .then(() => {
-                          alert("Item deleted successfully!");
-                          fetchItems(); // Refresh items after deletion
-                        })
-                        .catch((error) => {
-                          console.error("Error deleting item:", error);
-                          alert("Error deleting item.");
-                        });
-                    }
-                  }}
-                >
-                  Delete
-                </button>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <p className="text-gray-700 col-span-full text-center">
             No items found.

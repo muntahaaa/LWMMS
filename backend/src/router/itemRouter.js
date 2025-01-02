@@ -11,27 +11,29 @@ const itemRouter = express.Router();
 itemRouter.use(bodyParser.json());
 itemRouter.use(cors());
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
       const uploadPath = 'item-media-uploads/';
       if (!fs.existsSync(uploadPath)) {
-          fs.mkdirSync(uploadPath, { recursive: true });
+        fs.mkdirSync(uploadPath, { recursive: true });
       }
       cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
+    },
+    filename: (req, file, cb) => {
       const contributorName = req.body.contributor?.contributorName?.replace(/\s+/g, '_') || 'Unknown';
       const title = req.body.itemDetails?.title?.replace(/\s+/g, '_') || 'Untitled';
-      cb(null, `${contributorName}_${title}${path.extname(file.originalname)}`);
-  }
+      cb(null, `${contributorName}_${title}_${Date.now()}${path.extname(file.originalname)}`);
+    },
+  }),
 });
-  
-  
-  const upload = multer({ storage });
+
+// Allow multiple file uploads
+const uploadMultiple = upload.array('mediaAttachments', 10); // Max 10 files
 
 //itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
 itemRouter.get('/by-contributor',itemController.getItemsByContributor);
-itemRouter.post('/add',upload.single('mediaAttachment'), itemController.createItem);
+itemRouter.post('/add', uploadMultiple, itemController.createItem);
 itemRouter.get('/get-all',itemController.getAllItems);
 itemRouter.get('/get-all-by-category',itemController.getAllByCategory);
 itemRouter.get('/get-all-by-tag',itemController.getAllByTag);
