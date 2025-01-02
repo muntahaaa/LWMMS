@@ -32,7 +32,7 @@ const createItem = catchAsync(async (req, res, next) => {
             phone: contributor.phone,
         },
     });
-    console.log("Hello");
+   
 
     if (!existingContributor) {
         existingContributor = await Contributor.create(contributor);

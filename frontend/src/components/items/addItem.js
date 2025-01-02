@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../../axiosConfig";
 
 const AddItem = () => {
@@ -18,7 +18,23 @@ const AddItem = () => {
   });
 
   const [mediaAttachment, setMediaAttachment] = useState([]);
+  const [contributors, setContributors] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   //const [message, setMessage] = useState("");
+
+
+  useEffect(() => {
+    const fetchContributors = async () => {
+      try {
+        const response = await axios.get("/contributor/all");
+        setContributors(response.data.data.contributors || []);
+      } catch (error) {
+        console.error("Error fetching contributors:", error);
+      }
+    };
+
+    fetchContributors();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -38,6 +54,18 @@ const AddItem = () => {
       return [...prevFiles, ...newFiles];
     });
   };
+
+  const handleContributorSelect = (contributor) => {
+    setFormData({
+      ...formData,
+      contributorName: contributor.contributorName,
+      phone: contributor.phone,
+      email: contributor.email,
+      description: contributor.description,
+    });
+    setShowDropdown(false);
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,8 +106,46 @@ const AddItem = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Add Item</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <h2 className="text-2xl font-bold mb-4 py-3 text-center underline">Add Item</h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="text-left mb-4">
+        <button
+          type="button"
+          onClick={() => setShowDropdown(!showDropdown)}
+          className="bg-blue-500 text-white py-2 px-4 rounded-md"
+        >
+          Add Contributor from Existing
+        </button>
+        {showDropdown && (
+          <div className="mt-2">
+            <select
+              onChange={(e) => {
+                const selectedContributor = contributors.find(
+                  (contributor) =>
+                    `${contributor.contributorName} - ${contributor.phone}` ===
+                    e.target.value
+                );
+                handleContributorSelect(selectedContributor);
+              }}
+              className="border border-gray-300 rounded-md p-2 w-full"
+            >
+              <option value="">Select Contributor</option>
+              {contributors.map((contributor) => (
+                <option
+                  key={contributor.id}
+                  value={`${contributor.contributorName} - ${contributor.phone}`}
+                >
+                  {contributor.contributorName} - {contributor.phone}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+      
+    
+      
+   
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col">
             <label

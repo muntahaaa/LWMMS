@@ -66,7 +66,7 @@ const ViewItems = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">View Items</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center py-3 underline">View Items</h2>
 
       {/* Search Section */}
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
