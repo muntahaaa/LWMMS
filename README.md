@@ -26,7 +26,7 @@ The LWM Management System is a robust and scalable solution for managing archiva
 Clone this repository to your local machine and cd to the directory:
 
 ```bash
-git clone https://github.com/adnan-bin-wahid/LWM-Management-System
+git clone https://github.com/muntahaaa/LWMMS
 cd LWM-Management-System
 ```
 
