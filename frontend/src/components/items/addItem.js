@@ -8,6 +8,8 @@ const AddItem = () => {
     email: "",
     description: "",
     title: "",
+    collectionNo: "",
+    accessionNo: "",
     itemDescription: "",
     location: "",
     latitude: "",
@@ -21,6 +23,8 @@ const AddItem = () => {
   const [contributors, setContributors] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   //const [message, setMessage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  
 
 
   useEffect(() => {
@@ -76,6 +80,8 @@ const AddItem = () => {
     data.append("contributor[email]", formData.email);
     data.append("contributor[description]", formData.description);
     data.append("itemDetails[title]", formData.title);
+    data.append("itemDetails[collectionNo]", formData.collectionNo);
+    data.append("itemDetails[accessionNo]", formData.accessionNo);
     data.append("itemDetails[description]", formData.itemDescription);
     data.append("itemDetails[location]", formData.location);
     data.append("itemDetails[latitude]", formData.latitude);
@@ -103,6 +109,7 @@ const AddItem = () => {
       alert("Error adding item");
     }
   };
+  
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -116,8 +123,19 @@ const AddItem = () => {
         >
           Add Contributor from Existing
         </button>
-        {showDropdown && (
-          <div className="mt-2">
+        {(showDropdown || searchQuery) && (
+           <div className="mt-2 border border-gray-300 rounded-md p-2 bg-white">
+      {/* Search Box */}
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => {setSearchQuery(e.target.value);
+          if (!showDropdown) setShowDropdown(true); 
+        }}
+        placeholder="Search contributor..."
+        className="border border-gray-300 rounded-md p-2 w-full mb-2"
+      />
+      {/* Filtered Dropdown */}
             <select
               onChange={(e) => {
                 const selectedContributor = contributors.find(
@@ -130,11 +148,17 @@ const AddItem = () => {
               className="border border-gray-300 rounded-md p-2 w-full"
             >
               <option value="">Select Contributor</option>
-              {contributors.map((contributor) => (
-                <option
-                  key={contributor.id}
-                  value={`${contributor.contributorName} - ${contributor.phone}`}
-                >
+              {contributors
+          .filter((contributor) =>
+            `${contributor.contributorName} - ${contributor.phone}`
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          )
+          .map((contributor) => (
+            <option
+              key={contributor.id}
+              value={`${contributor.contributorName} - ${contributor.phone}`}
+            >
                   {contributor.contributorName} - {contributor.phone}
                 </option>
               ))}
@@ -224,6 +248,36 @@ const AddItem = () => {
               className="border border-gray-300 rounded-md p-2 w-full"
             />
           </div>
+          <div className="flex flex-col">
+            <label htmlFor="collectionNo" className="text-sm font-semibold mb-2">
+              Collection Number
+            </label>
+            <input
+              type="text"
+              id="collectionNo"
+              name="collectionNo"
+              placeholder="Item Collection Number"
+              value={formData.collectionNo}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="accessionNo" className="text-sm font-semibold mb-2">
+              Item Accession Number
+            </label>
+            <input
+              type="text"
+              id="accessionNo"
+              name="accessionNo"
+              placeholder="Item Accession Number"
+              value={formData.accessionNo}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+
           <div className="flex flex-col">
             <label
               htmlFor="itemDescription"

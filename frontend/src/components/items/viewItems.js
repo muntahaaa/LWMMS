@@ -107,25 +107,31 @@ const ViewItems = () => {
 
             return (
               <div
-                className="bg-white shadow rounded-lg p-4 flex flex-col"
+                className="bg-white shadow rounded-lg p-4 flex flex-col py-3"
                 key={item.id}
               >
                 <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
                 <p className="text-gray-700 mb-2">{item.description}</p>
                 <p className="text-sm text-gray-500 mb-1">
-                  <strong>Location:</strong> {item.location || "N/A"}
+                  <strong>Collection No:</strong> {item.collectionNo || "N/A"}
                 </p>
                 <p className="text-sm text-gray-500 mb-1">
-                  <strong>Contributor:</strong>{" "}
+                  <strong>Accession No:</strong> {item.accessionNo || "N/A"}
+                </p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Contributor/Donor:</strong>{" "}
                   {item.Contributor?.contributorName || "N/A"}
                 </p>
                 <p className="text-sm text-gray-500 mb-1">
-                  <strong>Categories:</strong>{" "}
+                  <strong>Object type/Category:</strong>{" "}
                   {item.Categories?.map((tag) => tag.name).join(", ") || "None"}
                 </p>
                 <p className="text-sm text-gray-500 mb-1">
-                  <strong>Tags:</strong>{" "}
+                  <strong>Object head/Tags:</strong>{" "}
                   {item.Tags?.map((tag) => tag.name).join(", ") || "None"}
+                </p>
+                <p className="text-sm text-gray-500 mb-1">
+                  <strong>Location:</strong> {item.location || "N/A"}
                 </p>
                 <p className="text-sm text-gray-500 mb-1">
                   <strong>Display Status:</strong>{" "}
@@ -148,10 +154,13 @@ const ViewItems = () => {
                           ".pdf"
                         ) ||
                         item.mediaLocation[currentMediaIndex].endsWith(
+                            ".txt"
+                          ) ||
+                        item.mediaLocation[currentMediaIndex].endsWith(
                           ".pptx"
                         ) ? (
                           <span className="text-blue-500 underline flex items-center justify-center h-full">
-                            View Document {currentMediaIndex + 1}
+                            View File Document {currentMediaIndex + 1}
                           </span>
                         ) : (
                           <img

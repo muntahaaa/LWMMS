@@ -25,6 +25,14 @@ const Item = sequelize.define('Item', {
       },
     },
   },
+  collectionNo: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
+  },
+  accessionNo: {
+    type: Sequelize.FLOAT,
+    allowNull: true,
+  },
   description: {
     type: Sequelize.STRING,
     defaultValue: '-',
@@ -62,7 +70,7 @@ const Item = sequelize.define('Item', {
   },
   mediaLocation: {
     type: Sequelize.ARRAY(Sequelize.STRING),
-    defaultValue: '-',
+    defaultValue: ['-'],
 
   },
 

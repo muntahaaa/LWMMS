@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const itemController = require('../controller/itemController');
-const {protect} = require('../../middleware/authMiddleware')
+const { protect } = require('../../middleware/authMiddleware')
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -14,35 +14,40 @@ itemRouter.use(cors());
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      const uploadPath = 'item-media-uploads/';
+      const contributorName = req.body.contributor?.contributorName?.replace(/\s+/g, '_') || 'Unknown';
+      const collectionNo = req.body.itemDetails?.collectionNo?.replace(/\s+/g, '_') || 'Unknown-CollectionNo';
+      const uploadPath = `item-media-uploads/${collectionNo}.${contributorName}/`;
+
       if (!fs.existsSync(uploadPath)) {
         fs.mkdirSync(uploadPath, { recursive: true });
       }
       cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-      const contributorName = req.body.contributor?.contributorName?.replace(/\s+/g, '_') || 'Unknown';
-      const title = req.body.itemDetails?.title?.replace(/\s+/g, '_') || 'Untitled';
-      cb(null, `${contributorName}_${title}_${Date.now()}${path.extname(file.originalname)}`);
+      const accessionNo = req.body.itemDetails?.accessionNo?.replace(/\s+/g, '_') || 'Unknown-AccessionNo';
+      const mediaNumber = req.fileCounter || 0; // Initialize counter if not present
+      req.fileCounter = mediaNumber + 1; // Increment counter for the next file
+      cb(null, `${accessionNo}-${req.fileCounter}${path.extname(file.originalname)}`);
     },
   }),
 });
-
 // Allow multiple file uploads
-const uploadMultiple = upload.array('mediaAttachments', 10); // Max 10 files
+const uploadMultiple = upload.array('mediaAttachments', 20); // Max 20 files
 
 //itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
-itemRouter.get('/by-contributor',itemController.getItemsByContributor);
+itemRouter.get('/by-contributor', itemController.getItemsByContributor);
+
 itemRouter.post('/add', uploadMultiple, itemController.createItem);
-itemRouter.get('/get-all',itemController.getAllItems);
-itemRouter.get('/get-all-by-category',itemController.getAllByCategory);
-itemRouter.get('/get-all-by-tag',itemController.getAllByTag);
-itemRouter.get('/get-by-title',itemController.getItemsByTitle);
-itemRouter.get('/get-by-contributorName',itemController.getItemByContributorName);
+
+itemRouter.get('/get-all', itemController.getAllItems);
+itemRouter.get('/get-all-by-category', itemController.getAllByCategory);
+itemRouter.get('/get-all-by-tag', itemController.getAllByTag);
+itemRouter.get('/get-by-title', itemController.getItemsByTitle);
+itemRouter.get('/get-by-contributorName', itemController.getItemByContributorName);
 itemRouter.get('/:id', itemController.getItemById);
 //update
 itemRouter.put('/update/:id', upload.single('mediaAttachment'), itemController.updateItem);
 //delete
-itemRouter.delete('/delete/:id',itemController.deleteItem);
+itemRouter.delete('/delete/:id', itemController.deleteItem);
 
-module.exports= itemRouter;
+module.exports = itemRouter;

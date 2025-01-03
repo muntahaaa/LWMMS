@@ -21,6 +21,14 @@ module.exports = {
           },
         }, 
       },
+      collectionNo: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      accessionNo: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
       description: {
         type: Sequelize.STRING
       },
