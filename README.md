@@ -27,7 +27,7 @@ Clone this repository to your local machine and cd to the directory:
 
 ```bash
 git clone https://github.com/muntahaaa/LWMMS
-cd LWM-Management-System
+cd LWMMS
 ```
 
 ### Step 2: Install Dependencies
