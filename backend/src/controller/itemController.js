@@ -51,9 +51,9 @@ const createItem = catchAsync(async (req, res, next) => {
         tags: Array.isArray(itemDetails.tags) ? itemDetails.tags : [],
         displayStatus: displayStatus,
     };
-    //console.log("req.files------",req.files);
+   
     const mediaLocation = req.files ? req.files.map(file => file.path) : [];
-    //console.log("mediaLocations-----",mediaLocation);
+  
 
     const newItem = await Item.create({
         ...newItemDetails,
@@ -90,10 +90,7 @@ const createItem = catchAsync(async (req, res, next) => {
             });
         }
     }
-    // req.itemId = newItem.id; // Store the item ID in the request object
-    // console.log(`Item id: ${req.itemId}`);
-    // next();
-
+  
     res.status(201).json({
         status: 'success in creating item',
         data: newItem,
@@ -493,12 +490,12 @@ const updateItem = catchAsync(async (req, res, next) => {
 const deleteItem = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    // Step 1: Validate the Item ID
+   
     if (!id) {
         return next(new AppError('Item ID is required for deletion', 400));
     }
 
-    // Step 2: Find the Item to ensure it exists
+  
     const item = await Item.findOne({
         where: { id },
         include: [
@@ -512,7 +509,7 @@ const deleteItem = catchAsync(async (req, res, next) => {
         return next(new AppError('Item not found', 404));
     }
 
-    // Step 3: Handle Junction Table Entries (ItemCategories and ItemTags)
+    // Handle Junction Table Entries (ItemCategories and ItemTags)
     if (item.Categories && item.Categories.length > 0) {
         for (const category of item.Categories) {
             await ItemCategories.destroy({ where: { itemId: item.id, categoryId: category.id } });
@@ -525,7 +522,7 @@ const deleteItem = catchAsync(async (req, res, next) => {
         }
     }
 
-    // Step 4: Handle Contributor
+   
     // Only soft-delete the contributor if this is their last associated item
     const itemCountForContributor = await Item.count({
         where: { contributorID: item.contributorID },
@@ -534,14 +531,14 @@ const deleteItem = catchAsync(async (req, res, next) => {
     if (itemCountForContributor === 1) {
         const contributor = await Contributor.findOne({ where: { id: item.contributorID } });
         if (contributor) {
-           // await contributor.destroy();
+            await contributor.destroy();
         }
     }
 
     // Step 5: Soft Delete the Item
     await item.destroy();
 
-    // Step 6: Respond with Success
+  
     res.status(200).json({
         status: 'success',
         message: 'Item and related records successfully soft deleted',

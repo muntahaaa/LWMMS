@@ -229,7 +229,11 @@ const ViewItems = () => {
                         )
                       ) {
                         axios
-                          .delete(`/items/delete/${item.id}`)
+                          .delete(`/items/delete/${item.id}`,{
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                            },
+                          })
                           .then(() => {
                             alert("Item deleted successfully!");
                             fetchItems(); // Refresh items after deletion

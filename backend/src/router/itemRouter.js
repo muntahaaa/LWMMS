@@ -25,31 +25,31 @@ const upload = multer({
     },
     filename: (req, file, cb) => {
       const accessionNo = req.body.itemDetails?.accessionNo?.replace(/\s+/g, '_') || 'Unknown-AccessionNo';
-      const mediaNumber = req.fileCounter || 0; // Initialize counter if not present
-      req.fileCounter = mediaNumber + 1; // Increment counter for the next file
+      const mediaNumber = req.fileCounter || 0; 
+      req.fileCounter = mediaNumber + 1;
       cb(null, `${accessionNo}-${req.fileCounter}${path.extname(file.originalname)}`);
     },
   }),
 });
 
-const uploadMultiple = upload.array('mediaAttachments', 20); // Max 20 files
+const uploadMultiple = upload.array('mediaAttachments', 20); 
 
-//itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
-itemRouter.get('/by-contributor', itemController.getItemsByContributor);
+itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
+
 
 itemRouter.post('/add', protect,uploadMultiple, itemController.createItem);
 
 itemRouter.get('/get-all', protect,itemController.getAllItems);
-itemRouter.get('/get-all-by-category', itemController.getAllByCategory);
-itemRouter.get('/get-all-by-tag', itemController.getAllByTag);
-itemRouter.get('/get-by-title', itemController.getItemsByTitle);
-itemRouter.get('/get-by-contributorName', itemController.getItemByContributorName);
-itemRouter.get('/:id', itemController.getItemById);
+itemRouter.get('/get-all-by-category',protect, itemController.getAllByCategory);
+itemRouter.get('/get-all-by-tag', protect,itemController.getAllByTag);
+itemRouter.get('/get-by-title', protect,itemController.getItemsByTitle);
+itemRouter.get('/get-by-contributorName',protect, itemController.getItemByContributorName);
+itemRouter.get('/:id', protect,itemController.getItemById);
 //update
-itemRouter.put('/update/:id', uploadMultiple, itemController.updateItem);
+itemRouter.put('/update/:id', protect,uploadMultiple, itemController.updateItem);
 
 
 //delete
-itemRouter.delete('/delete/:id', itemController.deleteItem);
+itemRouter.delete('/delete/:id',protect, itemController.deleteItem);
 
 module.exports = itemRouter;
