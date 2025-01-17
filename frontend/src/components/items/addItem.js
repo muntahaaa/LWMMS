@@ -25,7 +25,11 @@ const AddItem = () => {
   //const [message, setMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   
-
+  const token = localStorage.getItem("token") || "";
+  if (!token) {
+    console.error("Token is missing. Redirecting to login.");
+    window.location.href = "/login";
+  }
 
   useEffect(() => {
     const fetchContributors = async () => {
@@ -101,7 +105,11 @@ const AddItem = () => {
     }
 
     try {
-      const response = await axios.post("/items/add", data);
+      const response = await axios.post("/items/add", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log("Item added successfully:", response.data);
       alert("Item added successfully!");
     } catch (error) {

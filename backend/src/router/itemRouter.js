@@ -31,22 +31,24 @@ const upload = multer({
     },
   }),
 });
-// Allow multiple file uploads
+
 const uploadMultiple = upload.array('mediaAttachments', 20); // Max 20 files
 
 //itemRouter.get('/by-contributor',protect,itemController.getItemsByContributor);
 itemRouter.get('/by-contributor', itemController.getItemsByContributor);
 
-itemRouter.post('/add', uploadMultiple, itemController.createItem);
+itemRouter.post('/add', protect,uploadMultiple, itemController.createItem);
 
-itemRouter.get('/get-all', itemController.getAllItems);
+itemRouter.get('/get-all', protect,itemController.getAllItems);
 itemRouter.get('/get-all-by-category', itemController.getAllByCategory);
 itemRouter.get('/get-all-by-tag', itemController.getAllByTag);
 itemRouter.get('/get-by-title', itemController.getItemsByTitle);
 itemRouter.get('/get-by-contributorName', itemController.getItemByContributorName);
 itemRouter.get('/:id', itemController.getItemById);
 //update
-itemRouter.put('/update/:id', upload.single('mediaAttachment'), itemController.updateItem);
+itemRouter.put('/update/:id', uploadMultiple, itemController.updateItem);
+
+
 //delete
 itemRouter.delete('/delete/:id', itemController.deleteItem);
 

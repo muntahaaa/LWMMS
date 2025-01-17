@@ -9,6 +9,12 @@ const ViewItems = () => {
   const [error, setError] = useState(null); // To handle and display errors
   const [mediaIndexes, setMediaIndexes] = useState({}); // Track currentMediaIndex for each item
 
+  const token = localStorage.getItem("token") || "";
+  if (!token) {
+    console.error("Token is missing. Redirecting to login.");
+    window.location.href = "/login";
+  }
+
   useEffect(() => {
     fetchItems();
   }, []);
@@ -28,7 +34,12 @@ const ViewItems = () => {
         url = `/items/${endpoint}?query=${query}`;
       }
 
-      const response = await axios.get(url);
+        const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+     
       setItems(response.data.data || []);
       setMediaIndexes({}); // Reset indexes when new items are fetched
       setError(null);
@@ -155,6 +166,9 @@ const ViewItems = () => {
                         ) ||
                         item.mediaLocation[currentMediaIndex].endsWith(
                             ".txt"
+                          ) ||
+                          item.mediaLocation[currentMediaIndex].endsWith(
+                            ".doc"
                           ) ||
                         item.mediaLocation[currentMediaIndex].endsWith(
                           ".pptx"

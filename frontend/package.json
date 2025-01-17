@@ -7,6 +7,7 @@
     "cra-template": "1.2.0",
     "cross-env": "^7.0.3",
     "jsonwebtoken": "^9.0.2",
+    "lwmms": "file:..",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.1",

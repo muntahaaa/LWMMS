@@ -23,7 +23,7 @@ const createContributor = catchAsync(async(req , res ) => {
 });
 
 const getContributorDetails = catchAsync(async (req, res, next) => {
-    const { contributorName, phone } = req.query;
+    const { contributorName, phone, } = req.query;
    
   
    
@@ -39,6 +39,12 @@ const getContributorDetails = catchAsync(async (req, res, next) => {
              contributorName: contributorName || null,
              phone: phone || null ,      
         },
+        include: [
+          {
+            model: ContributionDetails, // Related model
+            attributes: ['email', 'description','contributorName','phone'], // Specify fields to include
+          },
+        ],
       });
 
     

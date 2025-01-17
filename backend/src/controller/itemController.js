@@ -17,10 +17,14 @@ const { Op } = require('sequelize');
 
 
 const createItem = catchAsync(async (req, res, next) => {
+    
     const { contributor, itemDetails, categories, tags, displayStatus } = req.body;
+    if (!req.user) {
+        return next(new AppError('Not authorized', 401));
+      }
 
-    // const createdBy = req.user.id;
-    const createdBy = 1;
+     const createdBy = req.user.id;
+    //const createdBy = 1;
 
     if (!contributor || !contributor.contributorName || !contributor.phone) {
         return next(new AppError('Contributor name and phone number is required', 400));
@@ -98,6 +102,10 @@ const createItem = catchAsync(async (req, res, next) => {
 
 
 const getAllItems = catchAsync(async (req, res, next) => {
+    if (!req.user) {
+        return next(new AppError('Not authorized', 401));
+      }
+    
     const items = await Item.findAll({
         include: [
             {
@@ -404,30 +412,8 @@ const getItemByContributorName = async (req, res) => {
 
 
 
-// const updateItem = catchAsync(async (req, res, next) => {
-//     const { id } = req.params;
-//     const updates = req.body;
 
-//     if (!id) {
-//         return next(new AppError('Item ID is required', 400));
-//     }
-//     const item = await Item.findByPk(id);
-
-
-//     if (!item) {
-//         return next(new AppError('No item found with the specified ID', 404));
-//     }
-
-
-//     await item.update(updates);
-
-//     res.status(200).json({
-//         status: 'success',
-//         data: item,
-//     });
-// });
-
-const updateItem = catchAsync(async (req, res, next) => {
+const updateItem = catchAsync(async (req, res, next) => { 
     const { contributor, itemDetails, categories, tags } = req.body;
     const itemId = req.params.id;
 
@@ -464,7 +450,8 @@ const updateItem = catchAsync(async (req, res, next) => {
     const updatedDetails = {
         ...itemDetails,
         contributorID: updatedContributor.id,
-        mediaLocation: req.file ? req.file.path : item.mediaLocation,
+        mediaLocation: req.file ? req.file.path : item.mediaLocation, // Only update if file exists
+        displayStatus: itemDetails?.displayStatus || item.displayStatus, // Handle display status
     };
 
     await item.update(updatedDetails);
@@ -494,10 +481,12 @@ const updateItem = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: 'success',
         message: 'Item updated successfully',
-        data: item,
+        data: {
+            item,
+            displayStatus: updatedDetails.displayStatus,  // Include the display status in the response
+        },
     });
 });
-
 
 
 
@@ -545,7 +534,7 @@ const deleteItem = catchAsync(async (req, res, next) => {
     if (itemCountForContributor === 1) {
         const contributor = await Contributor.findOne({ where: { id: item.contributorID } });
         if (contributor) {
-            await contributor.destroy();
+           // await contributor.destroy();
         }
     }
 
