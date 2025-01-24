@@ -7,6 +7,7 @@ const process = require('process');
 const basename = path.basename(__filename);
 const Role= require('./role');
 const Permission= require('./permission');
+const RolePermission = require('./rolepermission');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../../config/config.js')[env];
 const db = {};
@@ -46,8 +47,8 @@ Object.keys(db).forEach(modelName => {
 db.Role.hasMany(db.User, { foreignKey: 'roleID' });
 db.User.belongsTo(db.Role, { foreignKey: 'roleID' });
 
-db.Role.belongsToMany(db.Permission, { as: "permissions", foreignKey: 'roleID', through: 'RolePermission' });
-db.Permission.belongsToMany(db.Role, { as: "roles", foreignKey: 'permissionID', through: 'RolePermission' });
+db.Role.belongsToMany(db.Permission, { as: "permissions", foreignKey: 'roleID', through: 'RolePermission', otherKey: 'permissionId',  });
+db.Permission.belongsToMany(db.Role, { as: "roles", foreignKey: 'permissionID', through: 'RolePermission',  otherKey: 'roleId', });
 
 sequelize.sync();
 

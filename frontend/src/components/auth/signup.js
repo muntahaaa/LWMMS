@@ -7,7 +7,7 @@ const Signup = () => {
     Name: '',
     Email: '',
     Password: '',
-    roleName: 'Admin',
+    roleName: 'User',
   });
 
   //const [roles, setRoles] = useState([]);

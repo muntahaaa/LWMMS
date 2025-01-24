@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const itemController = require('../controller/itemController');
-const { protect } = require('../../middleware/authMiddleware')
+const { protect } = require('../../middleware/authMiddleware');
+const checkPermissions= require('../../middleware/checkPermission');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -46,10 +47,16 @@ itemRouter.get('/get-by-title', protect,itemController.getItemsByTitle);
 itemRouter.get('/get-by-contributorName',protect, itemController.getItemByContributorName);
 itemRouter.get('/:id', protect,itemController.getItemById);
 //update
-itemRouter.put('/update/:id', protect,uploadMultiple, itemController.updateItem);
+itemRouter.put('/update/:id', 
+  
+  protect,
+  uploadMultiple, itemController.updateItem);
 
 
 //delete
-itemRouter.delete('/delete/:id',protect, itemController.deleteItem);
+itemRouter.delete('/delete/:id',
+  protect, 
+  checkPermissions('delete'), 
+  itemController.deleteItem);
 
 module.exports = itemRouter;

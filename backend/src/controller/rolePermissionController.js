@@ -58,6 +58,7 @@ const viewRoles =catchAsync (async (req, res) => {
         throw new AppError('Failed to fetch roles',500);
     }
 });
+
 const viewPermissions = catchAsync(async (req, res) => {
     try {
         const permissionList = await Permission.findAll();
@@ -66,6 +67,30 @@ const viewPermissions = catchAsync(async (req, res) => {
         console.error('Error fetching permissions:', error);
       
         throw new AppError('Failed to fetch permissions',500);
+    }
+});
+
+const getRolePermissions = catchAsync(async (req, res) => {
+    try{
+        const rolePermissionList = await RolePermission.findAll(
+            /*{
+            include: [
+                {
+                  model: Role,
+                  attributes: ['id', 'roleName'],
+                },
+                {
+                  model: Permission,
+                  attributes: ['id', 'permissionName'],
+                },
+              ],
+            }*/
+        );
+            res.status(200).json(rolePermissionList);
+
+    }catch(error){
+       
+        throw new AppError('Failed to fetch role permissions',500);
     }
 });
 
@@ -102,6 +127,6 @@ const viewPermissions = catchAsync(async (req, res) => {
 
 module.exports = {
     createRole, createPermission,  viewRoles,
-    viewPermissions,setUpAssociation
+    viewPermissions,getRolePermissions,setUpAssociation
   
 };

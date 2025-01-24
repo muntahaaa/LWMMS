@@ -531,7 +531,8 @@ const deleteItem = catchAsync(async (req, res, next) => {
     if (itemCountForContributor === 1) {
         const contributor = await Contributor.findOne({ where: { id: item.contributorID } });
         if (contributor) {
-            await contributor.destroy();
+            //await contributor.destroy();
+            //message "update or delete on table \"Contributors\" violates foreign key constraint \"Items_contributorID_fkey\" on table \"Items\""
         }
     }
 
