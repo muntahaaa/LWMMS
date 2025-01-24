@@ -3,13 +3,24 @@ import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
-      <div className="flex space-x-4">
-        <Link to="/add-item" className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition duration-300">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen"
+      style={{ backgroundColor: "#d5d1c5" }}
+    >
+      <h1 className="text-8xl font-bold text-gray-800 mb-8">
+        Dashboard
+      </h1>
+      <div className="flex space-x-6">
+        <Link
+          to="/add-item"
+          className="text-3xl px-8 py-4 text-white bg-gray-500 rounded-lg shadow-lg hover:bg-gray-900 hover:shadow-xl transition-all duration-300"
+        >
           Add Item
         </Link>
-        <Link to="/view-items" className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition duration-300">
+        <Link
+          to="/view-items"
+          className="text-3xl px-8 py-4 text-white bg-gray-500 rounded-lg shadow-lg hover:bg-gray-700 hover:shadow-xl transition-all duration-300"
+        >
           View Items
         </Link>
       </div>
@@ -18,4 +29,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
