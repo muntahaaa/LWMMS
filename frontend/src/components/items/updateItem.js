@@ -23,21 +23,11 @@ const UpdateItem = () => {
   });
   const [existingMedia, setExistingMedia] = useState([]); // Store existing media paths
   const [mediaAttachment, setMediaAttachment] = useState([]); // Store new uploaded files
-
-  const token = localStorage.getItem("token") || "";
-  if (!token) {
-    console.error("Token is missing. Redirecting to login.");
-    window.location.href = "/login";
-  }
   // Fetch Item Data
   useEffect(() => {
     const fetchItemData = async () => {
       try {
-        const response = await axios.get(`/items/${id}`,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(`/items/${id}`);
         const item = response.data.data;
         console.log("Parsed item data:", item);
 
@@ -133,13 +123,8 @@ const UpdateItem = () => {
     data.append("existingMedia", JSON.stringify(existingMedia));
 
     try {
-      await axios.put(`/items/update/${id}`, data,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.put(`/items/update/${id}`);
       alert("Item updated successfully!");
-      
     } catch (error) {
       console.error(
         "Error updating item:",
