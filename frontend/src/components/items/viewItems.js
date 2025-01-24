@@ -9,12 +9,6 @@ const ViewItems = () => {
   const [error, setError] = useState(null); // To handle and display errors
   const [mediaIndexes, setMediaIndexes] = useState({}); // Track currentMediaIndex for each item
 
-  const token = localStorage.getItem("token") || "";
-  if (!token) {
-    console.error("Token is missing. Redirecting to login.");
-    window.location.href = "/login";
-  }
-
   useEffect(() => {
     fetchItems();
   }, []);
@@ -34,22 +28,13 @@ const ViewItems = () => {
         url = `/items/${endpoint}?query=${query}`;
       }
 
-        const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-     
+      const response = await axios.get(url);
       setItems(response.data.data || []);
       setMediaIndexes({}); // Reset indexes when new items are fetched
       setError(null);
     } catch (error) {
-      
-      if (error.response && error.response.status === 403) {
-        alert("You do not have permission to perform this action");
-      } else {
-        setError("Failed to fetch items. Please try again later.");
-      }
+      console.error("Error fetching items:", error);
+      setError("Failed to fetch items. Please try again later.");
       setItems([]);
     }
   };
@@ -171,9 +156,6 @@ const ViewItems = () => {
                         item.mediaLocation[currentMediaIndex].endsWith(
                             ".txt"
                           ) ||
-                          item.mediaLocation[currentMediaIndex].endsWith(
-                            ".doc"
-                          ) ||
                         item.mediaLocation[currentMediaIndex].endsWith(
                           ".pptx"
                         ) ? (
@@ -233,21 +215,14 @@ const ViewItems = () => {
                         )
                       ) {
                         axios
-                          .delete(`/items/delete/${item.id}`,{
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                            },
-                          })
+                        .delete(`/items/delete/${item.id}`)
                           .then(() => {
                             alert("Item deleted successfully!");
                             fetchItems(); // Refresh items after deletion
                           })
                           .catch((error) => {
-                            if (error.response && error.response.status === 403) {
-                              alert("You do not have permission to perform this action");
-                            } else {
-                              alert("Error deleting item.");
-                            }
+                            console.error("Error deleting item:", error);
+                            alert("Error deleting item.");
                           });
                       }
                     }}

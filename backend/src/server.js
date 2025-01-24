@@ -28,7 +28,7 @@ app.use(
   '/item-media-uploads',
   express.static(path.resolve(__dirname, '../item-media-uploads'))
 );
-app.use(cors({ origin: 'http://localhost:4000' })); // Allow requests from the frontend
+// app.use(cors({ origin: 'http://localhost:4000' })); // Allow requests from the frontend
 
 app.use('/auth', authRouter);
 app.use('/access',rolePermissionRouter);

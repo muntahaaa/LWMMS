@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       fetchUser(storedToken);
     }
   }, []);
-
+ 
   const fetchUser = async (token) => {
     try {
       const response = await axios.get('/auth/me', {
