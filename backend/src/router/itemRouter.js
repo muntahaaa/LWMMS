@@ -59,7 +59,7 @@ itemRouter.put('/update/:id',
 //delete
  itemRouter.delete('/delete/:id',
    protect, 
-   checkPermissions('delete'), 
+   checkPermissions('del'), 
    itemController.deleteItem);
   //itemRouter.delete('/delete/:id',
   //protect,itemController.deleteItem);

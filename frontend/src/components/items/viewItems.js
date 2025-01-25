@@ -33,7 +33,7 @@ const ViewItems = () => {
       setMediaIndexes({}); // Reset indexes when new items are fetched
       setError(null);
     } catch (error) {
-      if (error.response && error.response.status === 403) {
+      if (error.response && error.response.status === 402) {
         alert("You do not have permission to perform this action");
       } else {
         setError("Failed to fetch items. Please try again later.");
@@ -233,10 +233,10 @@ const ViewItems = () => {
                               fetchItems(); // Refresh items after deletion
                             })
                             .catch((error) => {
-                              if (error.response && error.response.status === 403) {
-                                alert("You do not have permission to perform this action");
+                              if (error.response && error.response.status === 402) {
+                                alert(error.response.data.message);
                               } else {
-                                alert("Error deleting item.");
+                                alert(error.response.data.message);
                               }
                             });
                         }
