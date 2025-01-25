@@ -23,11 +23,20 @@ const UpdateItem = () => {
   });
   const [existingMedia, setExistingMedia] = useState([]); // Store existing media paths
   const [mediaAttachment, setMediaAttachment] = useState([]); // Store new uploaded files
+  const token = localStorage.getItem("token") || "";
+  if (!token) {
+    console.error("Token is missing. Redirecting to login.");
+    window.location.href = "/login";
+  }
   // Fetch Item Data
   useEffect(() => {
     const fetchItemData = async () => {
       try {
-        const response = await axios.get(`/items/${id}`);
+        const response = await axios.get(`/items/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const item = response.data.data;
         console.log("Parsed item data:", item);
 
@@ -38,7 +47,7 @@ const UpdateItem = () => {
           description: item.Contributor?.description || "",
           title: item.title || "",
           itemDescription: item.description || "",
-          collectionNo: item.collectionNo ||"",
+          collectionNo: item.collectionNo || "",
           accessionNo: item.accessionNo || "",
           location: item.location || "",
           latitude: item.latitude || "",
@@ -106,10 +115,19 @@ const UpdateItem = () => {
     data.append("itemDetails[title]", formData.title);
     data.append("itemDetails[description]", formData.itemDescription);
     data.append("itemDetails[location]", formData.location);
-    data.append("itemDetails[latitude]", formData.latitude ? parseFloat(formData.latitude) : null);
-    data.append("itemDetails[longitude]", formData.longitude ? parseFloat(formData.longitude) : null);
+    data.append(
+      "itemDetails[latitude]",
+      formData.latitude ? parseFloat(formData.latitude) : null
+    );
+    data.append(
+      "itemDetails[longitude]",
+      formData.longitude ? parseFloat(formData.longitude) : null
+    );
     data.append("itemDetails[collectionNo]", formData.collectionNo);
-    data.append("itemDetails[accessionNo]", formData.accessionNo ? parseFloat(formData.accessionNo) : null);
+    data.append(
+      "itemDetails[accessionNo]",
+      formData.accessionNo ? parseFloat(formData.accessionNo) : null
+    );
     data.append("itemDetails[displayStatus]", formData.displayStatus);
 
     // Add categories and tags
@@ -123,7 +141,11 @@ const UpdateItem = () => {
     data.append("existingMedia", JSON.stringify(existingMedia));
 
     try {
-      await axios.put(`/items/update/${id}`);
+      await axios.put(`/items/update/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       alert("Item updated successfully!");
     } catch (error) {
       console.error(
@@ -136,9 +158,6 @@ const UpdateItem = () => {
     }
   };
   return (
-    <div className="min-h-screen"
-    style={{ backgroundColor: '#d5d1c5' }}
-    >
     <div className="max-w-4xl mx-auto p-6 bg-gray-50 shadow-md rounded-md">
       <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
         Update Item
@@ -493,7 +512,6 @@ const UpdateItem = () => {
           </button>
         </div>
       </form>
-    </div>
     </div>
   );
 };
