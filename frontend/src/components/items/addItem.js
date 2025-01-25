@@ -120,9 +120,14 @@ const AddItem = () => {
   
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-    <h2 className="text-2xl font-bold mb-4 py-3 text-center underline">Add Item</h2>
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen"
+    style={{ backgroundColor: '#d5d1c5' }}
+    >
+    <div className="max-w-6xl mx-auto p-8  shadow-md rounded-lg">
+    <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+      Add Item
+    </h2>
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-left mb-4">
         <button
           type="button"
@@ -132,7 +137,7 @@ const AddItem = () => {
           Add Contributor from Existing
         </button>
         {(showDropdown || searchQuery) && (
-           <div className="mt-2 border border-gray-300 rounded-md p-2 bg-white">
+           <div className="mt-3 border border-gray-300 rounded-md p-2 bg-white">
       {/* Search Box */}
       <input
         type="text"
@@ -457,14 +462,15 @@ const AddItem = () => {
         </div>
 
         <div className="text-center">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md w-full sm:w-auto mt-4"
-          >
-            Add Item
-          </button>
+        <button
+          type="submit"
+          className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition"
+        >
+          Add Item
+        </button>
         </div>
       </form>
+    </div>
     </div>
   );
 };

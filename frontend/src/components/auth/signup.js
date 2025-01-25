@@ -10,26 +10,8 @@ const Signup = () => {
     roleName: 'User',
   });
 
-  //const [roles, setRoles] = useState([]);
   const [message, setMessage] = useState('');
-  //const [roles, setRoles] = useState('Visitor');
   const navigate = useNavigate();
-
-  /*useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axios.get('/access/view-roles');
-        
-        setRoles(response.data); 
-      } catch (error) {
-        console.error('Failed to fetch roles:', error);
-      }
-    };
-
-    fetchRoles();
-  }, []);  */
- 
-
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -49,22 +31,48 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
-        <h2 className="text-2xl font-bold mb-4">Signup</h2>
-        <input type="text" name="Name" placeholder="Name" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-        <input type="email" name="Email" placeholder="Email" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-        <input type="password" name="Password" placeholder="Password" onChange={handleChange} className="mb-2 p-2 border rounded w-full" />
-       {/* <select name="roleName" onChange={handleChange} className="mb-2 p-2 border rounded w-full">
-          <option value="">Select Role</option>
-          {roles.map((role) => (
-            <option key={role.id} value={role.roleName}>
-              {role.roleName}
-            </option>
-          ))}
-        </select>  */}
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 w-full">Signup</button>
-        {message && <p className="mt-4 text-center">{message}</p>}
+    <div
+      className="flex flex-col items-center justify-center min-h-screen"
+      style={{ backgroundColor: '#d5d1c5' }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-lg shadow-2xl w-96"
+        style={{
+          boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.2)',
+        }}
+      >
+        <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-800">Create an Account</h2>
+        <input
+          type="text"
+          name="Name"
+          placeholder="Full Name"
+          onChange={handleChange}
+          className="mb-4 p-3 border rounded-md w-full text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+        <input
+          type="email"
+          name="Email"
+          placeholder="Email Address"
+          onChange={handleChange}
+          className="mb-4 p-3 border rounded-md w-full text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+        <input
+          type="password"
+          name="Password"
+          placeholder="Password"
+          onChange={handleChange}
+          className="mb-4 p-3 border rounded-md w-full text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300"
+        >
+          Sign Up
+        </button>
+        {message && (
+          <p className="mt-4 text-center text-gray-700 font-medium">{message}</p>
+        )}
       </form>
     </div>
   );
