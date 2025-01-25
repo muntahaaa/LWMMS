@@ -33,8 +33,11 @@ const ViewItems = () => {
       setMediaIndexes({}); // Reset indexes when new items are fetched
       setError(null);
     } catch (error) {
-      console.error("Error fetching items:", error);
-      setError("Failed to fetch items. Please try again later.");
+      if (error.response && error.response.status === 403) {
+        alert("You do not have permission to perform this action");
+      } else {
+        setError("Failed to fetch items. Please try again later.");
+      }
       setItems([]);
     }
   };
@@ -230,8 +233,11 @@ const ViewItems = () => {
                               fetchItems(); // Refresh items after deletion
                             })
                             .catch((error) => {
-                              console.error("Error deleting item:", error);
-                              alert("Error deleting item.");
+                              if (error.response && error.response.status === 403) {
+                                alert("You do not have permission to perform this action");
+                              } else {
+                                alert("Error deleting item.");
+                              }
                             });
                         }
                       }}
