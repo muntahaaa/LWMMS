@@ -1,4 +1,4 @@
-const userModel = require("../../models/userModel")
+const userModel = require("../../db/models/usermodel")
 const bcrypt = require('bcryptjs');
 
 
@@ -6,7 +6,7 @@ async function userSignUpController(req,res){
     try{
         const { email, password, name} = req.body
 
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({ where: { email } });
 
         console.log("user",user)
 
@@ -33,7 +33,7 @@ async function userSignUpController(req,res){
 
         const payload = {
             ...req.body,
-            role : "GENERAL",
+            role : "ADMIN",
             password : hashPassword
         }
 

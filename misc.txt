@@ -1,0 +1,25 @@
+frontend
+npm install -D tailwindcss@3
+npx tailwindcss init
+npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
+npm i react-router-dom
+npm install react-icons
+npm install react-redux
+npm install react-toastify
+npm install @reduxjs/toolkit
+
+backend
+npm i nodemon express cors dotenv
+npm i bcryptjs
+npm i jsonwebtoken
+npm i body-parser
+npm install cookie-parser
+npm i --save pg pg-hstore
+npm install sequelize
+npm install --save-dev sequelize-cli
+npx sequelize-cli init (to create models,seeders etc)
+npx sequelize-cli model:generate --name userModel --attributes name:string, email:string, password:string, profilePic:string, role:string
+npx sequelize-cli db:migrate
+npx sequelize-cli db:migrate:undo
+
+

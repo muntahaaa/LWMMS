@@ -40,9 +40,9 @@ function App() {
   }
 
   useEffect(()=>{
-    /**user Details */
+   
     fetchUserDetails()
-    /**user Details cart product */
+    
     fetchUserAddToCart()
 
   },[])

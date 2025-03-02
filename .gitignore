@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 # Ignore frontend/src/assets if it's for media or compiled files
-frontend/src/assest/
+frontend/src/assets/
