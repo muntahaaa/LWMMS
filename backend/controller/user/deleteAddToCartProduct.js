@@ -2,7 +2,7 @@ const { Cart } = require("../../models"); // Import Sequelize Cart model
 
 const deleteAddToCartProduct = async (req, res) => {
     try {
-        const addToCartProductId = req.body.id; // ✅ Change `_id` to `id` (Sequelize uses `id`)
+        const addToCartProductId = req.body.id; // ✅ Change `id` to `id` (Sequelize uses `id`)
 
         // ✅ Sequelize equivalent of `deleteOne()`
         const deleteProduct = await Cart.destroy({ where: { id: addToCartProductId } });

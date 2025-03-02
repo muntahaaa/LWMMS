@@ -25,7 +25,7 @@ async function userSignInController(req, res) {
 
         if (checkPassword) {
             const tokenData = {
-                id: user.id, // ✅ Fix: Use `id` instead of `_id`
+                id: user.id, // ✅ Fix: Use `id` instead of `id`
                 email: user.email,
             };
 

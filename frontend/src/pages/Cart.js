@@ -51,7 +51,7 @@ const Cart = () => {
             },
             body : JSON.stringify(
                 {   
-                    _id : id,
+                    id : id,
                     quantity : qty + 1
                 }
             )
@@ -76,7 +76,7 @@ const Cart = () => {
                 },
                 body : JSON.stringify(
                     {   
-                        _id : id,
+                        id : id,
                         quantity : qty - 1
                     }
                 )
@@ -100,7 +100,7 @@ const Cart = () => {
             },
             body : JSON.stringify(
                 {   
-                    _id : id,
+                    id : id,
                 }
             )
         })
@@ -141,13 +141,13 @@ const Cart = () => {
                         ) : (
                           data.map((product,index)=>{
                            return(
-                            <div key={product?._id+"Add To Cart Loading"} className='w-full bg-white h-32 my-2 border border-slate-300  rounded grid grid-cols-[128px,1fr]'>
+                            <div key={product?.id+"Add To Cart Loading"} className='w-full bg-white h-32 my-2 border border-slate-300  rounded grid grid-cols-[128px,1fr]'>
                                 <div className='w-32 h-32 bg-slate-200'>
                                     <img src={product?.productId?.productImage[0]} className='w-full h-full object-scale-down mix-blend-multiply' />
                                 </div>
                                 <div className='px-4 py-2 relative'>
                                     {/**delete product */}
-                                    <div className='absolute right-0 text-red-600 rounded-full p-2 hover:bg-red-600 hover:text-white cursor-pointer' onClick={()=>deleteCartProduct(product?._id)}>
+                                    <div className='absolute right-0 text-red-600 rounded-full p-2 hover:bg-red-600 hover:text-white cursor-pointer' onClick={()=>deleteCartProduct(product?.id)}>
                                         <MdDelete/>
                                     </div>
 
@@ -158,9 +158,9 @@ const Cart = () => {
                                             <p className='text-slate-600 font-semibold text-lg'>{displayINRCurrency(product?.productId?.sellingPrice  * product?.quantity)}</p>
                                     </div>
                                     <div className='flex items-center gap-3 mt-1'>
-                                        <button className='border border-red-600 text-red-600 hover:bg-red-600 hover:text-white w-6 h-6 flex justify-center items-center rounded ' onClick={()=>decraseQty(product?._id,product?.quantity)}>-</button>
+                                        <button className='border border-red-600 text-red-600 hover:bg-red-600 hover:text-white w-6 h-6 flex justify-center items-center rounded ' onClick={()=>decraseQty(product?.id,product?.quantity)}>-</button>
                                         <span>{product?.quantity}</span>
-                                        <button className='border border-red-600 text-red-600 hover:bg-red-600 hover:text-white w-6 h-6 flex justify-center items-center rounded ' onClick={()=>increaseQty(product?._id,product?.quantity)}>+</button>
+                                        <button className='border border-red-600 text-red-600 hover:bg-red-600 hover:text-white w-6 h-6 flex justify-center items-center rounded ' onClick={()=>increaseQty(product?.id,product?.quantity)}>+</button>
                                     </div>
                                 </div>    
                             </div>

@@ -108,7 +108,7 @@ const VerticalCardProduct = ({ category, heading }) => {
                     </div>
                     <button
                       className="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-0.5 rounded-full"
-                      onClick={(e) => handleAddToCart(e, product?._id)}
+                      onClick={(e) => handleAddToCart(e, product?.id)}
                     >
                       Add to Cart
                     </button>

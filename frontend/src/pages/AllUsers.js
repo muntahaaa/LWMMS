@@ -12,7 +12,7 @@ const AllUsers = () => {
         email : "",
         name : "",
         role : "",
-        _id  : ""
+        id  : ""
     })
 
     const fetchAllUsers = async() =>{
@@ -85,7 +85,7 @@ const AllUsers = () => {
                     name={updateUserDetails.name}
                     email={updateUserDetails.email}
                     role={updateUserDetails.role}
-                    userId={updateUserDetails._id}
+                    userId={updateUserDetails.id}
                     callFunc={fetchAllUsers}
                 />
             )      

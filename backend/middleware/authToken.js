@@ -21,7 +21,7 @@ async function authToken(req, res, next) {
                 console.log("error auth", err);
             }
 
-            req.userId = decoded?.id; // Fix: Change `_id` to `id` for Sequelize
+            req.userId = decoded?.id; // Fix: Change `id` to `id` for Sequelize
 
             next();
         });
