@@ -1,26 +1,26 @@
-const addToCartModel = require("../../models/cartProduct")
+const { Cart } = require("../../models"); // Import Sequelize Cart model
 
-const deleteAddToCartProduct = async(req,res)=>{
-    try{
-        const currentUserId = req.userId 
-        const addToCartProductId = req.body._id
+const deleteAddToCartProduct = async (req, res) => {
+    try {
+        const addToCartProductId = req.body.id; // ✅ Change `_id` to `id` (Sequelize uses `id`)
 
-        const deleteProduct = await addToCartModel.deleteOne({ _id : addToCartProductId})
+        // ✅ Sequelize equivalent of `deleteOne()`
+        const deleteProduct = await Cart.destroy({ where: { id: addToCartProductId } });
 
         res.json({
-            message : "Product Deleted From Cart",
-            error : false,
-            success : true,
-            data : deleteProduct
-        })
+            message: "Product Deleted From Cart",
+            error: false,
+            success: true,
+            data: deleteProduct
+        });
 
-    }catch(err){
+    } catch (err) {
         res.json({
-            message : err?.message || err,
-            error : true,
-            success : false
-        })
+            message: err?.message || err,
+            error: true,
+            success: false
+        });
     }
-}
+};
 
-module.exports = deleteAddToCartProduct
+module.exports = deleteAddToCartProduct;

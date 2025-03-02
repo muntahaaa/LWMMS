@@ -1,40 +1,38 @@
-const userModel = require("../../models/userModel")
+const { User } = require("../../models"); // Import Sequelize User model
 
-async function updateUser(req,res){
-    try{
-        const sessionUser = req.userId
+async function updateUser(req, res) {
+    try {
+        const sessionUser = req.userId;
+        const { userId, email, name, role } = req.body;
 
-        const { userId , email, name, role} = req.body
-
+        // ✅ Construct payload dynamically
         const payload = {
-            ...( email && { email : email}),
-            ...( name && { name : name}),
-            ...( role && { role : role}),
-        }
+            ...(email && { email }),
+            ...(name && { name }),
+            ...(role && { role }),
+        };
 
-        const user = await userModel.findById(sessionUser)
+        // ✅ Find the logged-in user by ID (Sequelize equivalent of `findById`)
+        const user = await User.findByPk(sessionUser);
 
-        console.log("user.role",user.role)
+        console.log("user.role", user?.role);
 
+        // ✅ Update user record (Sequelize equivalent of `findByIdAndUpdate`)
+        const updateUser = await User.update(payload, { where: { id: userId } });
 
-
-        const updateUser = await userModel.findByIdAndUpdate(userId,payload)
-
-        
         res.json({
-            data : updateUser,
-            message : "User Updated",
-            success : true,
-            error : false
-        })
-    }catch(err){
+            data: updateUser,
+            message: "User Updated",
+            success: true,
+            error: false
+        });
+    } catch (err) {
         res.status(400).json({
-            message : err.message || err,
-            error : true,
-            success : false
-        })
+            message: err.message || err,
+            error: true,
+            success: false
+        });
     }
 }
 
-
-module.exports = updateUser
+module.exports = updateUser;

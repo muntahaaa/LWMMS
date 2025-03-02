@@ -1,30 +1,30 @@
-const addToCartModel = require("../../models/cartProduct")
+const { Cart } = require("../../models"); // Import Sequelize Cart model
 
-const updateAddToCartProduct = async(req,res)=>{
-    try{
-        const currentUserId = req.userId 
-        const addToCartProductId = req?.body?._id
+const updateAddToCartProduct = async (req, res) => {
+    try {
+        const addToCartProductId = req?.body?.id; // ✅ Change `_id` to `id` (Sequelize uses `id`)
+        const qty = req.body.quantity;
 
-        const qty = req.body.quantity
-
-        const updateProduct = await addToCartModel.updateOne({_id : addToCartProductId},{
-            ...(qty && {quantity : qty})
-        })
+        // ✅ Sequelize equivalent of `updateOne()`
+        const updateProduct = await Cart.update(
+            { ...(qty && { quantity: qty }) }, // Only update if `qty` is provided
+            { where: { id: addToCartProductId } }
+        );
 
         res.json({
-            message : "Product Updated",
-            data : updateProduct,
-            error : false,
-            success : true
-        })
+            message: "Product Updated",
+            data: updateProduct,
+            error: false,
+            success: true
+        });
 
-    }catch(err){
+    } catch (err) {
         res.json({
-            message : err?.message || err,
-            error : true,
-            success : false
-        })
+            message: err?.message || err,
+            error: true,
+            success: false
+        });
     }
-}
+};
 
-module.exports = updateAddToCartProduct
+module.exports = updateAddToCartProduct;

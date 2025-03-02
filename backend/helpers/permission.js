@@ -1,14 +1,15 @@
-const userModel = require("../models/userModel")
+const { User } = require("../models"); // Import Sequelize User model
 
-const uploadProductPermission = async(userId) => {
-    const user = await userModel.findById(userId)
+const uploadProductPermission = async (userId) => {
+    const user = await User.findByPk(userId); // Sequelize uses findByPk instead of findById
 
-    if(user.role === 'ADMIN'){
-        return true
+    if (!user) return false; // Handle case where user is not found
+
+    if (user.role === "ADMIN") {
+        return true;
     }
 
-    return false
-}
+    return false;
+};
 
-
-module.exports = uploadProductPermission
+module.exports = uploadProductPermission;

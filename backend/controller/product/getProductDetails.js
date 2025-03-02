@@ -1,26 +1,26 @@
-const productModel = require("../../models/productModel")
+const { Product } = require("../../models"); // Import Sequelize Product model
 
-const getProductDetails = async(req,res)=>{
-    try{
-        const { productId } = req.body
+const getProductDetails = async (req, res) => {
+    try {
+        const { productId } = req.body;
 
-        const product = await productModel.findById(productId)
+        // ✅ Sequelize equivalent of `findById()`
+        const product = await Product.findByPk(productId);
 
         res.json({
-            data : product,
-            message : "Ok",
-            success : true,
-            error : false
-        })
+            data: product,
+            message: "Ok",
+            success: true,
+            error: false
+        });
 
-        
-    }catch(err){
+    } catch (err) {
         res.json({
-            message : err?.message  || err,
-            error : true,
-            success : false
-        })
+            message: err?.message || err,
+            error: true,
+            success: false
+        });
     }
-}
+};
 
-module.exports = getProductDetails
+module.exports = getProductDetails;
