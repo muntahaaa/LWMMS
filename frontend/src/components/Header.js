@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
+import { useEffect, useRef } from "react";
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
+import { FaBars } from "react-icons/fa6"; // ✅ Menu icon
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SummaryApi from "../common";
@@ -15,6 +17,8 @@ const Header = () => {
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
   const [menuDisplay, setMenuDisplay] = useState(false);
+  const [navMenu, setNavMenu] = useState(false); // ✅ State for the menu
+  const menuRef = useRef(null);
   const context = useContext(Context);
   const navigate = useNavigate();
   const searchInput = useLocation();
@@ -41,6 +45,17 @@ const Header = () => {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setNavMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSearch = (e) => {
     const { value } = e.target;
     setSearch(value);
@@ -51,9 +66,10 @@ const Header = () => {
       navigate("/search");
     }
   };
+
   return (
     <header className="h-16 shadow-md bg-white fixed w-full z-40">
-      <div className=" h-full container mx-auto flex items-center px-4 justify-between">
+      <div className="h-full container mx-auto flex items-center px-4 justify-between">
         <div className="">
           <Link to={"/"}>
             <Logo w={90} h={50} />
@@ -63,7 +79,7 @@ const Header = () => {
         <div className="hidden lg:flex items-center w-full justify-between max-w-sm border rounded-full focus-within:shadow pl-2">
           <input
             type="text"
-            placeholder="search product here..."
+            placeholder="Search product here..."
             className="w-full outline-none"
             onChange={handleSearch}
             value={search}
@@ -78,7 +94,7 @@ const Header = () => {
             {user?.id && (
               <div
                 className="text-3xl cursor-pointer relative flex justify-center"
-                onClick={() => setMenuDisplay((preve) => !preve)}
+                onClick={() => setMenuDisplay((prev) => !prev)}
               >
                 {user?.profilePic ? (
                   <img
@@ -99,7 +115,7 @@ const Header = () => {
                     <Link
                       to={"/admin-panel/all-products"}
                       className="whitespace-nowrap hidden md:block hover:bg-slate-100 p-2"
-                      onClick={() => setMenuDisplay((preve) => !preve)}
+                      onClick={() => setMenuDisplay((prev) => !prev)}
                     >
                       Admin Panel
                     </Link>
@@ -114,7 +130,6 @@ const Header = () => {
               <span>
                 <FaShoppingCart />
               </span>
-
               <div className="bg-red-600 text-white w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
                 <p className="text-sm">{context?.cartProductCount}</p>
               </div>
@@ -137,6 +152,68 @@ const Header = () => {
                 Login
               </Link>
             )}
+          </div>
+
+          {/** ✅ Standard Menu Bar **/}
+          <div className="relative" ref={menuRef}>
+            {/** ✅ Menu Button */}
+            <button
+              onClick={() => setNavMenu((prev) => !prev)}
+              className="text-2xl p-3 transition-transform duration-300 transform hover:scale-110 focus:outline-none"
+            >
+              <FaBars />
+            </button>
+
+            {/** ✅ Dropdown Menu with Smooth Animation */}
+            {navMenu && (
+              <div className="absolute right-0 mt-2 bg-white shadow-lg p-4 rounded-lg w-52 border border-gray-300 animate-slideDown z-50">
+                <nav className="flex flex-col gap-2">
+                  <Link
+                    to="/"
+                    className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/about"
+                    className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
+                  >
+                    About
+                  </Link>
+                  <Link
+                    to="/events"
+                    className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
+                  >
+                    Events
+                  </Link>
+                  <Link
+                    to="/tickets"
+                    className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
+                  >
+                    Tickets
+                  </Link>
+                </nav>
+              </div>
+            )}
+
+            {/** ✅ Smooth Dropdown Animation */}
+            <style>
+              {`
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .animate-slideDown {
+            animation: slideDown 0.3s ease-in-out;
+          }
+        `}
+            </style>
           </div>
         </div>
       </div>
