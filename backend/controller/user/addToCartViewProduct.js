@@ -9,11 +9,13 @@ const addToCartViewProduct = async (req, res) => {
             where: { userId: currentUser },
             include: [
                 {
-                    model: Product, // Fetch related product details
-                    as: "product", // Alias from associations
+                    model: Product,
+                    as: "product", // ✅ Matches alias in `belongsTo`
                 },
             ],
         });
+        console.log("Cart Products:", JSON.stringify(allProduct, null, 2)); // ✅ Logs the entire response
+
 
         res.json({
             data: allProduct,

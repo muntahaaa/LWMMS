@@ -17,6 +17,7 @@ db.Cart = require("./cart")(sequelize, DataTypes);
 db.User.hasMany(db.Cart, { foreignKey: "userId" });
 db.Product.hasMany(db.Cart, { foreignKey: "productId" });
 db.Cart.belongsTo(db.User, { foreignKey: "userId" });
-db.Cart.belongsTo(db.Product, { foreignKey: "productId" });
+db.Cart.belongsTo(db.Product, { foreignKey: "productId", as: "product" }); // ✅ Add alias "product"
+
 
 module.exports = db;
