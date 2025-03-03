@@ -12,16 +12,23 @@ async function updateUser(req, res) {
             ...(role && { role }),
         };
 
-        // ✅ Find the logged-in user by ID (Sequelize equivalent of `findById`)
+        // ✅ Find the logged-in user by ID (Sequelize equivalent of `findByPk`)
         const user = await User.findByPk(sessionUser);
 
         console.log("user.role", user?.role);
 
-        // ✅ Update user record (Sequelize equivalent of `findByIdAndUpdate`)
-        const updateUser = await User.update(payload, { where: { id: userId } });
+        // ✅ Update user record and return updated user
+        const [updatedRowCount] = await User.update(payload, { where: { id: userId } });
+
+        if (updatedRowCount === 0) {
+            throw new Error("User not found or no changes made");
+        }
+
+        // ✅ Fetch updated user details
+        const updatedUser = await User.findByPk(userId);
 
         res.json({
-            data: updateUser,
+            data: updatedUser,
             message: "User Updated",
             success: true,
             error: false

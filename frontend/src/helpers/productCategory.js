@@ -1,17 +1,16 @@
-const productCategory = [
-    { id : 1, label : "Airpodes", value : "airpodes"},
-    { id : 2, label : "Camera", value : "camera"},
-    { id : 3, label : "Earphones", value : "earphones"},
-    { id : 4, label : "Mobiles", value : "mobiles"},
-    { id : 5, label : "Mouse", value : "Mouse"},
-    { id : 6, label : "Printers", value : "printers"},
-    { id : 7, label : "Processor", value : "processor"},
-    { id : 8, label : "Refrigerator", value : "refrigerator"},
-    { id : 9, label : "Speakers", value : "speakers"},
-    { id : 10, label : "Trimmers", value : "trimmers"},
-    { id : 11, label : "Televisions", value : "televisions"},
-    { id : 12, label : "Watches", value : "watches"},
-]
+const artifactCategory = [
+    { id: 1, label: "Photographs", value: "photographs" },
+    { id: 2, label: "Documents", value: "documents" },
+    { id: 3, label: "Weapons", value: "weapons" },
+    { id: 4, label: "Personal Belongings", value: "personal-belongings" },
+    { id: 5, label: "Newspaper Clippings", value: "newspaper-clippings" },
+    { id: 6, label: "Letters & Diaries", value: "letters-diaries" },
+    { id: 7, label: "Medals & Awards", value: "medals-awards" },
+    { id: 8, label: "Audio-Visual Records", value: "audio-visual-records" },
+    { id: 9, label: "Artworks & Paintings", value: "artworks-paintings" },
+    { id: 10, label: "Posters & Pamphlets", value: "posters-pamphlets" },
+    { id: 11, label: "Eyewitness Testimonies", value: "eyewitness-testimonies" },
+    { id: 12, label: "Military Equipment", value: "military-equipment" },
+];
 
-
-export default productCategory
+export default artifactCategory;

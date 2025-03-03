@@ -3,15 +3,15 @@ const { Product } = require("../../models"); // Import Sequelize Product model
 const getProductController = async (req, res) => {
     try {
         // ✅ Sequelize equivalent of `find().sort({ createdAt: -1 })`
-        const allProducts = await Product.findAll({
+        const allArtifacts = await Product.findAll({
             order: [["createdAt", "DESC"]], // Sort by `createdAt` in descending order
         });
 
         res.json({
-            message: "All Products",
+            message: "All Artifacts",
             success: true,
             error: false,
-            data: allProducts
+            data: allArtifacts
         });
 
     } catch (err) {

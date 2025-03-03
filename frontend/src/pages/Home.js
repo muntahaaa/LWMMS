@@ -1,28 +1,33 @@
-import React from 'react'
-import CategoryList from '../components/CategoryList'
-import BannerProduct from '../components/BannerProduct'
-import HorizontalCardProduct from '../components/HorizontalCardProduct'
-import VerticalCardProduct from '../components/VerticalCardProduct'
+import React from 'react';
+import CategoryList from '../components/CategoryList';
+import BannerProduct from '../components/BannerProduct';
+import HorizontalCardProduct from '../components/HorizontalCardProduct';
+import VerticalCardProduct from '../components/VerticalCardProduct';
 
 const Home = () => {
   return (
     <div>
-      <CategoryList/>
-      <BannerProduct/>
+      {/*** Category Listing ***/}
+      <CategoryList />
+      
+      {/*** Banner Section ***/}
+      <BannerProduct />
 
-      <HorizontalCardProduct category={"airpodes"} heading={"Top's Airpodes"}/>
-      <HorizontalCardProduct category={"watches"} heading={"Popular's Watches"}/>
+      {/*** Featured & Important Artifacts ***/}
+      <HorizontalCardProduct category={"newspaper-clippings"} heading={"Newspaper Clippings"} />
+      <HorizontalCardProduct category={"documents"} heading={"Rare Historical Documents"} />
 
-      <VerticalCardProduct category={"mobiles"} heading={"Mobiles"}/>
-      <VerticalCardProduct category={"Mouse"} heading={"Mouse"}/>
-      <VerticalCardProduct category={"televisions"} heading={"Televisions"}/>
-      <VerticalCardProduct category={"camera"} heading={"Camera & Photography"}/>
-      <VerticalCardProduct category={"earphones"} heading={"Wired Earphones"}/>
-      <VerticalCardProduct category={"speakers"} heading={"Bluetooth Speakers"}/>
-      <VerticalCardProduct category={"refrigerator"} heading={"Refrigerator"}/>
-      <VerticalCardProduct category={"trimmers"} heading={"Trimmers"}/>
+      {/*** Display of Various Artifact Categories ***/}
+      <VerticalCardProduct category={"photographs"} heading={"Photographs from the Liberation War"} />
+      <VerticalCardProduct category={"weapons"} heading={"Weapons & Ammunition"} />
+      <VerticalCardProduct category={"medals-awards"} heading={"Medals & Honors"} />
+      <VerticalCardProduct category={"letters-diaries"} heading={"Letters from the Battlefield"} />
+      <VerticalCardProduct category={"personal-belongings"} heading={"Freedom Fighter Uniforms"} />
+      <VerticalCardProduct category={"audio-visual-records"} heading={"Audio & Radio Broadcasts"} />
+      <VerticalCardProduct category={"artworks-paintings"} heading={"Miscellaneous War Artifacts"} />
+      <VerticalCardProduct category={"posters-pamphlets"} heading={"Posters & Pamphlets"} />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

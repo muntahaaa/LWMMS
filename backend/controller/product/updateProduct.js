@@ -12,18 +12,18 @@ async function updateProductController(req, res) {
     const { id, ...resBody } = req.body; // ✅ Fix: Change `id` to `id` for Sequelize
 
     // ✅ Sequelize equivalent of `findByIdAndUpdate()`
-    const [updatedRowCount, updatedProducts] = await Product.update(resBody, {
+    const [updatedRowCount, updatedArtifacts] = await Product.update(resBody, {
       where: { id },
-      returning: true, // ✅ Ensures updated product is returned
+      returning: true, // ✅ Ensures updated artifact is returned
     });
 
     if (updatedRowCount === 0) {
-      throw new Error("Product not found or no changes made");
+      throw new Error("Artifact not found or no changes made");
     }
 
     res.json({
-      message: "Product updated successfully",
-      data: updatedProducts[0], // ✅ Return the updated product
+      message: "Artifact updated successfully",
+      data: updatedArtifacts[0], // ✅ Return the updated artifact
       success: true,
       error: false,
     });

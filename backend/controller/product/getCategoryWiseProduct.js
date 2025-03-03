@@ -5,11 +5,11 @@ const getCategoryWiseProduct = async (req, res) => {
         const { category } = req?.body || req?.query;
 
         // ✅ Sequelize equivalent of `find({ category })`
-        const products = await Product.findAll({ where: { category } });
+        const artifacts = await Product.findAll({ where: { category } });
 
         res.json({
-            data: products,
-            message: "Products fetched successfully",
+            data: artifacts,
+            message: "Artifacts fetched successfully",
             success: true,
             error: false
         });

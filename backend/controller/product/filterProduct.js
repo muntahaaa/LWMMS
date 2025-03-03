@@ -16,7 +16,7 @@ const filterProductController = async (req, res) => {
 
         res.json({
             data: products,
-            message: "Filtered products",
+            message: "Filtered artifacts",
             error: false,
             success: true
         });

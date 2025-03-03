@@ -6,18 +6,18 @@ const searchProduct = async (req, res) => {
         const query = req.query.q;
 
         // ✅ Sequelize equivalent of case-insensitive search using `Op.iLike`
-        const products = await Product.findAll({
+        const artifacts = await Product.findAll({
             where: {
                 [Op.or]: [
-                    { productName: { [Op.iLike]: `%${query}%` } }, // Case-insensitive search for productName
+                    { title: { [Op.iLike]: `%${query}%` } }, // Case-insensitive search for artifact title
                     { category: { [Op.iLike]: `%${query}%` } } // Case-insensitive search for category
                 ]
             }
         });
 
         res.json({
-            data: products,
-            message: "Search Product list",
+            data: artifacts,
+            message: "Search Artifact list",
             error: false,
             success: true
         });

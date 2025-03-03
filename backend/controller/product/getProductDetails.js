@@ -5,10 +5,10 @@ const getProductDetails = async (req, res) => {
         const { productId } = req.body;
 
         // ✅ Sequelize equivalent of `findById()`
-        const product = await Product.findByPk(productId);
+        const artifact = await Product.findByPk(productId);
 
         res.json({
-            data: product,
+            data: artifact,
             message: "Ok",
             success: true,
             error: false

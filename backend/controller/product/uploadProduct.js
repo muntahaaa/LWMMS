@@ -12,13 +12,13 @@ async function UploadProductController(req, res) {
         }
 
         // ✅ Sequelize equivalent of `new productModel(req.body).save()`
-        const saveProduct = await Product.create(req.body);
+        const saveArtifact = await Product.create(req.body);
 
         res.status(201).json({
-            message: "Product uploaded successfully",
+            message: "Artifact uploaded successfully",
             error: false,
             success: true,
-            data: saveProduct
+            data: saveArtifact
         });
 
     } catch (err) {

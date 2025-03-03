@@ -12,18 +12,18 @@ const getCategoryProduct = async (req, res) => {
         console.log("categories", categories);
 
         // Extract category names from result
-        const productCategories = categories.map(category => category.category);
+        const artifactCategories = categories.map(category => category.category);
 
-        // ✅ Fetch one product per category
-        const productByCategory = await Promise.all(
-            productCategories.map(async (category) => {
+        // ✅ Fetch one artifact per category
+        const artifactByCategory = await Promise.all(
+            artifactCategories.map(async (category) => {
                 return await Product.findOne({ where: { category } });
             })
         );
 
         res.json({
-            message: "Category-wise products",
-            data: productByCategory.filter(product => product !== null), // Remove null values
+            message: "Category-wise artifacts",
+            data: artifactByCategory.filter(artifact => artifact !== null), // Remove null values
             success: true,
             error: false
         });
