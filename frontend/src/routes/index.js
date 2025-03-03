@@ -12,6 +12,10 @@ import ProductDetails from '../pages/ProductDetails'
 import Cart from '../pages/Cart'
 import SearchProduct from '../pages/SearchProduct'
 import About from '../pages/About'
+import AllTickets from '../pages/AllTickets'
+import MyTickets from '../pages/MyTickets'
+import Tickets from '../pages/Tickets'
+import CreateTicket from '../pages/CreateTicket'
 
 const router = createBrowserRouter([
     {
@@ -55,6 +59,14 @@ const router = createBrowserRouter([
                 element : <About/>
             },
             {
+                path : "tickets",
+                element : <Tickets/>
+            },
+            {
+                path : "my-tickets",
+                element : <MyTickets/>
+            },
+            {
                 path : "admin-panel",
                 element : <AdminPanel/>,
                 children : [
@@ -65,7 +77,17 @@ const router = createBrowserRouter([
                     {
                         path : "all-products",
                         element : <AllProducts/>
-                    }
+                    },
+                    {
+                        path : "all-tickets",
+                        element : <AllTickets/>
+                    },
+                    {
+                        path : "add-ticket",
+                        element : <CreateTicket/>
+                    },
+                    
+
                 ]
             },
         ]

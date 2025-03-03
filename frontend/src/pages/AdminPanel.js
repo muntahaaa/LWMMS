@@ -50,6 +50,12 @@ const AdminPanel = () => {
           >
             All Artifacts
           </Link>
+          <Link
+            to={"all-tickets"}
+            className="px-4 py-2 hover:bg-gray-100 rounded transition-all"
+          >
+            All Tickets
+          </Link>
         </nav>
       </aside>
 

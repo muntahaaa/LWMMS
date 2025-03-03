@@ -22,6 +22,12 @@ const updateAddToCartProduct = require('../controller/user/updateAddToCartProduc
 const deleteAddToCartProduct = require('../controller/user/deleteAddToCartProduct')
 const searchProduct = require('../controller/product/searchProduct')
 const filterProductController = require('../controller/product/filterProduct')
+const uploadTicketController = require('../controller/Ticket/UploadTicketController')
+const updateTicketController = require('../controller/Ticket/updateTicketController')
+const deleteTicketController = require('../controller/Ticket/deleteTicketController')
+const getAllTicketsController = require('../controller/Ticket/getAllTicketsController')
+const purchaseTicketController = require('../controller/Ticket/purchaseTicketController')
+const viewTicketController = require('../controller/Ticket/viewTicketController')
 
 
 
@@ -52,6 +58,13 @@ router.post("/update-cart-product",authToken,updateAddToCartProduct)
 router.post("/delete-cart-product",authToken,deleteAddToCartProduct)
 
 
+//ticket
+router.post("/upload-ticket",authToken,uploadTicketController)
+router.post("/update-ticket",authToken,updateTicketController)
+router.post("/delete-ticket",authToken,deleteTicketController)
+router.get("/get-all-tickets",getAllTicketsController)
+router.post("/purchase-ticket",authToken,purchaseTicketController)
+router.get("/view-purchased-ticket",authToken,viewTicketController)
 
 
 
