@@ -53,37 +53,47 @@ const Tickets = () => {
       toast.error("Please select a valid date and quantity");
       return;
     }
-
+  
     const purchaseData = {
       ticketId: selectedTicket.id,
       quantity,
       entryDate: selectedDate,
     };
-
+  
     try {
-      const response = await fetch(SummaryApi.purchaseTicket.url, {
-        method: SummaryApi.purchaseTicket.method,
-        credentials: "include",
+      // Step 1: Create Payment Intent on backend
+      const response = await fetch(SummaryApi.createPaymentIntent.url, {
+        method: SummaryApi.createPaymentIntent.method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(purchaseData),
       });
-
+  
       const data = await response.json();
-
+  
+      // If payment intent is created successfully
       if (data.success) {
-        toast.success("Ticket purchased successfully!");
-        navigate("/my-tickets"); // Redirect to "My Tickets" page
+        // Step 2: Redirect to Payment Details Page with the client secret and ticket info
+        navigate(`/payment-details/${selectedTicket.id}`, {
+          state: {
+            clientSecret: data.clientSecret,
+            selectedTicket: selectedTicket, // pass selected ticket
+            quantity: quantity, // pass quantity
+            totalPrice: selectedTicket.price*quantity, // pass total price calculated
+            entryDate: selectedDate,
+          },
+        });
       } else {
-        toast.error("Failed to purchase ticket");
+        toast.error(data.message || "Failed to initiate payment process");
       }
     } catch (error) {
-      console.error("Error purchasing ticket:", error);
-      toast.error("Error purchasing ticket");
+      console.error("Error creating payment intent:", error);
+      toast.error("Error initiating payment process");
     }
   };
-
+  
+  
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold text-center my-4">Available Tickets</h1>
