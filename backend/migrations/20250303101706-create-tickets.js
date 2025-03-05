@@ -1,18 +1,20 @@
-// migrations/xxxxxx-create-tickets.js
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("tickets", {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('tickets', {
       id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       type: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       price: {
-        type: Sequelize.DECIMAL(10, 2),
+        type: Sequelize.FLOAT, // Changed to FLOAT for consistency with `registrationFee` in carts
         allowNull: false,
       },
       total_quantity: {
@@ -26,11 +28,11 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-      },
+      }
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("tickets");
-  },
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('tickets');
+  }
 };

@@ -29,49 +29,56 @@ const HorizontalCardProduct = ({ category, heading }) => {
     };
 
     return (
-        <div className="container mx-auto px-4 my-6 relative">
-            <h2 className="text-2xl font-semibold py-4">{heading}</h2>
+        <div className="container mx-auto px-6 my-10 relative">
+            <h2 className="text-3xl font-serif font-semibold text-gray-800 border-b-2 border-gray-300 pb-2">{heading}</h2>
 
-            <div className="flex items-center gap-4 md:gap-6 overflow-scroll scrollbar-none transition-all" ref={scrollElement}>
-                <button className="bg-white shadow-md rounded-full p-1 absolute left-0 text-lg hidden md:block" onClick={scrollLeft}>
-                    <FaAngleLeft />
-                </button>
-                <button className="bg-white shadow-md rounded-full p-1 absolute right-0 text-lg hidden md:block" onClick={scrollRight}>
-                    <FaAngleRight />
+            {/* Scrollable Section */}
+            <div className="relative">
+                <button 
+                    className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 text-white opacity-70 hover:opacity-100 p-3 rounded-full shadow-lg transition-all hidden md:block"
+                    onClick={scrollLeft}
+                >
+                    <FaAngleLeft size={20} />
                 </button>
 
-                {loading ? (
-                    loadingList.map((_, index) => (
-                        <div key={index} className="w-full min-w-[280px] md:min-w-[320px] max-w-[280px] md:max-w-[320px] h-40 bg-white rounded-sm shadow flex">
-                            <div className="bg-gray-200 h-full p-4 min-w-[120px] md:min-w-[145px] animate-pulse"></div>
-                            <div className="p-4 grid w-full gap-2">
-                                <h2 className="font-medium text-base md:text-lg text-ellipsis line-clamp-1 bg-gray-200 animate-pulse p-1 rounded-full"></h2>
-                                <p className="capitalize text-gray-500 bg-gray-200 animate-pulse p-1 rounded-full"></p>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    data.map((artifact, index) => (
-                        <Link
-                            to={`/product/${artifact?.id}`}
-                            key={index}
-                            className="w-full min-w-[280px] md:min-w-[320px] max-w-[280px] md:max-w-[320px] h-40 bg-white rounded-sm shadow flex"
-                        >
-                            <div className="bg-gray-200 h-full p-4 min-w-[120px] md:min-w-[145px]">
-                                <img
-                                    src={artifact?.productImage[0]}
-                                    className="object-scale-down h-full hover:scale-110 transition-all"
-                                    alt={artifact?.title}
-                                />
-                            </div>
-                            <div className="p-4 grid">
-                                <h2 className="font-medium text-base md:text-lg text-ellipsis line-clamp-1">{artifact?.title}</h2>
-                                <p className="capitalize text-gray-500">{artifact?.category}</p>
-                                <p className="text-gray-600 text-sm">{artifact?.time_period}</p>
-                            </div>
-                        </Link>
-                    ))
-                )}
+                <div className="flex items-center gap-6 overflow-x-auto scrollbar-none transition-all py-4" ref={scrollElement}>
+                    {loading ? (
+                        loadingList.map((_, index) => (
+                            <div key={index} className="w-[300px] h-[180px] bg-gray-200 rounded-lg shadow-lg animate-pulse"></div>
+                        ))
+                    ) : (
+                        data.map((artifact, index) => (
+                            <Link
+                                to={`/product/${artifact?.id}`}
+                                key={index}
+                                className="w-[300px] h-[200px] bg-white rounded-lg shadow-lg hover:shadow-xl transition-transform hover:scale-105 overflow-hidden flex flex-col"
+                            >
+                                {/* Image Section */}
+                                <div className="bg-gray-200 h-48 p-3 flex justify-center items-center">
+                                    <img
+                                        src={artifact?.productImage[0]}
+                                        className="object-contain h-full w-full transition-transform duration-300 hover:scale-110"
+                                        alt={artifact?.title}
+                                    />
+                                </div>
+
+                                {/* Text Section */}
+                                <div className="p-4 flex flex-col gap-1">
+                                    <h2 className="font-serif text-lg font-semibold text-gray-900 truncate">{artifact?.title}</h2>
+                                    <p className="capitalize text-gray-600 text-sm">{artifact?.category}</p>
+                                    <p className="text-gray-700 text-sm">{artifact?.time_period}</p>
+                                </div>
+                            </Link>
+                        ))
+                    )}
+                </div>
+
+                <button 
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 text-white opacity-70 hover:opacity-100 p-3 rounded-full shadow-lg transition-all hidden md:block"
+                    onClick={scrollRight}
+                >
+                    <FaAngleRight size={20} />
+                </button>
             </div>
         </div>
     );

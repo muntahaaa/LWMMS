@@ -22,8 +22,8 @@ const Home = () => {
       <VerticalCardProduct category={"weapons"} heading={"Weapons & Ammunition"} />
       <VerticalCardProduct category={"medals-awards"} heading={"Medals & Honors"} />
       <VerticalCardProduct category={"letters-diaries"} heading={"Letters from the Battlefield"} />
-      <VerticalCardProduct category={"personal-belongings"} heading={"Freedom Fighter Uniforms"} />
-      <VerticalCardProduct category={"audio-visual-records"} heading={"Audio & Radio Broadcasts"} />
+      <VerticalCardProduct category={"personal-belongings"} heading={"Personal Belongings"} />
+     <VerticalCardProduct category={"audio-visual-records"} heading={"Audio & Radio Broadcasts"} />
       <VerticalCardProduct category={"artworks-paintings"} heading={"Miscellaneous War Artifacts"} />
       <VerticalCardProduct category={"posters-pamphlets"} heading={"Posters & Pamphlets"} />
     </div>

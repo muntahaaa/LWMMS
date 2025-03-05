@@ -1,40 +1,40 @@
 .customShadow {
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-/***user table***/
-.userTable {
-  @apply bg-white;
-}
-.userTable th {
-  @apply border text-base font-medium;
-}
-
-.userTable td {
-  @apply border text-base text-center;
-}
-
-/**scrollbar hidden****/
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-/* Add these styles for the modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 400px;
-  text-align: center;
-}
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /***user table***/
+  .userTable {
+    @apply bg-white;
+  }
+  .userTable th {
+    @apply border text-base font-medium;
+  }
+  
+  .userTable td {
+    @apply border text-base text-center;
+  }
+  
+  /**scrollbar hidden****/
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  /* Add these styles for the modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+  }

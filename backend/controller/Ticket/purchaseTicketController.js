@@ -38,7 +38,7 @@ const purchaseTicketController = async (req, res) => {
       entry_date: entryDate,
       purchase_date: new Date(),
     });
-
+console.log("new ticket registry",newTicketRegistry);
     // Update ticket availability after the purchase
     await ticketAvailabilityHelper.updateTicketAvailability(ticketId, quantity, entryDate);
 

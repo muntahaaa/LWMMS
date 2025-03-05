@@ -54,7 +54,7 @@ const CategroyWiseProductDisplay = ({ category, heading }) => {
                 </div>
                 <div className="mt-4">
                   <h3 className="font-semibold text-lg text-gray-800 line-clamp-1">
-                    {product?.title}
+                    Title:{product?.title}
                   </h3>
                   <p className="text-sm text-gray-500">{product?.contributorName}</p>
                   <p className="text-sm text-gray-500">{product?.category}</p>

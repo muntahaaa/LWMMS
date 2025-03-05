@@ -1,17 +1,17 @@
-const { Cart, Product } = require("../../models"); // Import Sequelize models
+const { User,Cart, Event } = require("../../models"); // Import Sequelize models
 
 const addToCartViewProduct = async (req, res) => {
     try {
-        const currentUser = req.userId;
+      
 
         // ✅ Sequelize equivalent of `find().populate("productId")`
         const allProduct = await Cart.findAll({
-            where: { userId: currentUser },
+            where: { userId: req.userId },
             include: [
-                {
-                    model: Product,
-                    as: "product", // ✅ Matches alias in `belongsTo`
-                },
+               
+                    { model: Event, as: 'event' },
+                    { model: User }
+                  
             ],
         });
         console.log("Cart Products:", JSON.stringify(allProduct, null, 2)); // ✅ Logs the entire response

@@ -1,45 +1,59 @@
-// migrations/xxxxxx-create-ticket-registries.js
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("ticket_registries", {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('ticket_registries', {
       id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       ticket_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "tickets",
-          key: "id",
+          model: 'tickets',
+          key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "users",
-          key: "id",
+          model: 'users',
+          key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
       purchase_date: {
-        type: Sequelize.DATEONLY,
         allowNull: false,
+        type: Sequelize.DATEONLY,
         defaultValue: Sequelize.NOW,
       },
       entry_date: {
-        type: Sequelize.DATEONLY,
         allowNull: false,
+        type: Sequelize.DATEONLY,
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      }
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("ticket_registries");
-  },
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('ticket_registries');
+  }
 };

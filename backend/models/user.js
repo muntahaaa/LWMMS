@@ -8,12 +8,12 @@ module.exports = (sequelize, DataTypes) => {
       password: { type: DataTypes.STRING, allowNull: false },
       profilePic: { type: DataTypes.STRING },
       role: { type: DataTypes.STRING },
+      
     },
     {
       tableName: "users",
       timestamps: true,
     }
   );
-
   return User;
 };

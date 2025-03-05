@@ -1,19 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-import fetchCategoryWiseProduct from "../helpers/fetchCategoryWiseProduct"; // Make sure this fetches the product data
-import Context from "../context";
+import fetchCategoryWiseProduct from "../helpers/fetchCategoryWiseProduct";
 
 const VerticalCardProduct = ({ category, heading }) => {
-  const [data, setData] = useState([]); // Default empty array to prevent undefined errors
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const loadingList = new Array(13).fill(null);
+  const loadingList = new Array(8).fill(null);
 
-  // Fetch data for the category
   const fetchData = async () => {
     setLoading(true);
     const categoryProduct = await fetchCategoryWiseProduct(category);
-    setData(categoryProduct?.data || []); // ✅ Ensure `data` is never undefined
+    setData(categoryProduct?.data || []);
     setLoading(false);
   };
 
@@ -22,21 +19,23 @@ const VerticalCardProduct = ({ category, heading }) => {
   }, [category]);
 
   return (
-    <div className="container mx-auto px-4 my-6 relative">
-      <h2 className="text-2xl font-semibold py-4">{heading}</h2>
+    <div className="container mx-auto px-6 my-10">
+      <h2 className="text-3xl font-serif font-semibold text-gray-800 border-b-2 border-gray-300 pb-2">
+        {heading}
+      </h2>
 
-      <div className="flex items-center gap-4 md:gap-6 overflow-x-scroll scrollbar-none transition-all">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
         {loading
           ? loadingList.map((_, index) => (
               <div
                 key={index}
-                className="w-full min-w-[280px] md:min-w-[320px] max-w-[280px] md:max-w-[320px] bg-white rounded-sm shadow animate-pulse"
+                className="w-full bg-gray-100 rounded-lg shadow-lg animate-pulse"
               >
-                <div className="bg-slate-200 h-48 p-4"></div>
-                <div className="p-4 grid gap-3">
-                  <h2 className="font-medium text-base md:text-lg bg-slate-200 animate-pulse p-1 rounded-full"></h2>
-                  <p className="capitalize text-slate-500 bg-slate-200 animate-pulse p-1 rounded-full"></p>
-                  <button className="text-sm bg-slate-200 animate-pulse p-2 rounded-full"></button>
+                <div className="bg-gray-300 h-56 rounded-t-lg"></div>
+                <div className="p-4 space-y-3">
+                  <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-5/6"></div>
                 </div>
               </div>
             ))
@@ -44,21 +43,28 @@ const VerticalCardProduct = ({ category, heading }) => {
               <Link
                 key={product?.id}
                 to={"/product/" + product?.id}
-                className="w-full min-w-[280px] md:min-w-[320px] max-w-[280px] md:max-w-[320px] bg-white rounded-sm shadow"
+                className="w-full bg-white rounded-lg shadow-lg hover:shadow-xl transition-transform hover:scale-105"
               >
-                <div className="bg-slate-200 h-48 p-4">
+                {/* Image Section */}
+                <div className="bg-gray-200 h-56 flex justify-center items-center p-3 rounded-t-lg">
                   <img
                     src={product?.productImage?.[0]}
-                    className="object-scale-down h-full hover:scale-110 transition-all mix-blend-multiply"
+                    className="object-contain h-full w-full mix-blend-multiply transition-transform duration-300 hover:scale-110"
                     alt={product?.title}
                   />
                 </div>
-                <div className="p-4 grid gap-3">
-                  <h2 className="font-medium text-base md:text-lg text-black">
+
+                {/* Text Section */}
+                <div className="p-4 space-y-2">
+                  <h2 className="text-lg font-serif font-semibold text-gray-900 truncate">
                     {product?.title}
                   </h2>
-                  <p className="capitalize text-slate-500">{product?.category}</p>
-                  <div className="text-slate-500">{product?.description}</div>
+                  <p className="capitalize text-gray-600 text-sm">
+                    {product?.category}
+                  </p>
+                  <p className="text-gray-700 text-sm line-clamp-2">
+                    {product?.description}
+                  </p>
                 </div>
               </Link>
             ))}

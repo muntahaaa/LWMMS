@@ -21,31 +21,33 @@ const CategoryList = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 my-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Explore Categories</h2>
+    <div className="container mx-auto px-6 my-10">
+      <h2 className="text-3xl font-serif font-semibold text-gray-800 text-center border-b-2 border-gray-300 pb-3">
+        Explore Categories
+      </h2>
 
-      <div className="flex items-center gap-6 overflow-x-auto scrollbar-none pb-2">
+      <div className="flex items-center gap-6 overflow-x-auto scrollbar-none py-4 justify-center">
         {loading
           ? categoryLoading.map((_, index) => (
               <div
-                className="h-20 w-20 md:w-24 md:h-24 rounded-full bg-gray-200 animate-pulse"
+                className="h-24 w-24 md:h-28 md:w-28 rounded-full bg-gray-200 animate-pulse"
                 key={"categoryLoading" + index}
               ></div>
             ))
-          : categoryProduct.map((product, index) => (
+          : categoryProduct.map((product) => (
               <Link
                 to={`/product-category?category=${product?.category}`}
                 className="group text-center transition-all"
                 key={product?.category}
               >
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden p-4 bg-gray-100 flex items-center justify-center border hover:shadow-lg transition-all">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-gray-300 shadow-md hover:shadow-xl transition-transform hover:scale-110">
                   <img
-                    src={product?.productImage[0] || "/placeholder.jpg"} // Fallback image if none exists
+                    src={product?.productImage[0] || "/placeholder.jpg"}
                     alt={product?.category}
-                    className="h-full object-cover mix-blend-multiply group-hover:scale-110 transition-all"
+                    className="h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform"
                   />
                 </div>
-                <p className="text-sm md:text-base font-semibold text-gray-700 mt-2 capitalize group-hover:text-red-600">
+                <p className="text-sm md:text-lg font-semibold text-gray-700 mt-2 capitalize group-hover:text-red-700">
                   {product?.category}
                 </p>
               </Link>

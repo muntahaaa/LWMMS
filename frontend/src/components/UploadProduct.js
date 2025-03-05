@@ -142,6 +142,17 @@ const UploadProduct = ({ onClose, fetchData }) => {
             className="p-2 bg-gray-100 border rounded"
             required
           />
+          <label htmlFor="description">Description:</label>
+          <input
+            type="text"
+            id="description"
+            placeholder="Enter artifact description"
+            value={data.description}
+            name="description"
+            onChange={handleOnChange}
+            className="p-2 bg-gray-100 border rounded"
+            required
+          />
 
           <label htmlFor="contributorName">Contributor Name:</label>
           <input
@@ -154,6 +165,7 @@ const UploadProduct = ({ onClose, fetchData }) => {
             className="p-2 bg-gray-100 border rounded"
             required
           />
+
 
           <label htmlFor="category">Category:</label>
           <select

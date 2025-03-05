@@ -3,16 +3,18 @@ module.exports = (sequelize, DataTypes) => {
     "Cart",
     {
       id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      productId: {
+      eventId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: "Products", key: "id" },
+        references: { model: "Events", key: "id" },
       },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: "Users", key: "id" },
       },
+      registrationFee: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0.0 },
+      paymentStatus: { type: DataTypes.ENUM("pending", "paid"), defaultValue: "pending" },
       quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
     },
     {
@@ -20,5 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
     }
   );
+
   return Cart;
 };

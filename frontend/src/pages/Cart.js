@@ -1,206 +1,113 @@
-import React, { useContext, useEffect, useState } from 'react'
-import SummaryApi from '../common'
-import Context from '../context'
-import displayINRCurrency from '../helpers/displayCurrency'
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import SummaryApi from "../common";
+import { toast } from "react-toastify";
+
 
 const Cart = () => {
-    const [data,setData] = useState([])
-    const [loading,setLoading] = useState(false)
-    const context = useContext(Context)
-    const loadingCart = new Array(4).fill(null)
+    const [cartItems, setCartItems] = useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const userId = JSON.parse(sessionStorage.getItem('user'))?.userId || 1
+     // Replace with actual user ID from authentication
+console.log('user id ',userId)
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const eventId = queryParams.get("eventId");
+        const registrationFee = parseFloat(queryParams.get("registrationFee"));
 
-
-    const fetchData = async() =>{
-        
-        const response = await fetch(SummaryApi.addToCartProductView.url,{
-            method : SummaryApi.addToCartProductView.method,
-            credentials : 'include',
-            headers : {
-                "content-type" : 'application/json'
-            },
-        })
-       
-
-        const responseData = await response.json()
-
-        if(responseData.success){
-            setData(responseData.data)
+        if (eventId && registrationFee) {
+            const newCartItem = {
+                eventId,
+                registrationFee,
+                quantity: 1, // Default quantity is 1
+            };
+            setCartItems([newCartItem]);
         }
+    }, [location]);
 
-
-    }
-
-    const handleLoading = async() =>{
-        await fetchData()
-    }
-
-    useEffect(()=>{
-        setLoading(true)
-        handleLoading()
-         setLoading(false)
-    },[])
-
-
-    const increaseQty = async(id,qty) =>{
-        const response = await fetch(SummaryApi.updateCartProduct.url,{
-            method : SummaryApi.updateCartProduct.method,
-            credentials : 'include',
-            headers : {
-                "content-type" : 'application/json'
-            },
-            body : JSON.stringify(
-                {   
-                    id : id,
-                    quantity : qty + 1
-                }
-            )
-        })
-
-        const responseData = await response.json()
-
-
-        if(responseData.success){
-            fetchData()
-        }
-    }
-
-
-    const decraseQty = async(id,qty) =>{
-       if(qty >= 2){
-            const response = await fetch(SummaryApi.updateCartProduct.url,{
-                method : SummaryApi.updateCartProduct.method,
-                credentials : 'include',
-                headers : {
-                    "content-type" : 'application/json'
+    const updateQuantity = (index, newQuantity) => {
+        if (newQuantity < 1) return;
+        setCartItems((prevItems) => {
+            const updatedItems = [...prevItems];
+            updatedItems[index].quantity = newQuantity;
+            return updatedItems;
+        });
+    };
+ 
+    const handleConfirmPayment = async () => {
+        for (const item of cartItems) {
+            await fetch(SummaryApi.addToCartProduct.url, {
+                method: SummaryApi.addToCartProduct.method,
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                body : JSON.stringify(
-                    {   
-                        id : id,
-                        quantity : qty - 1
-                    }
-                )
+                body: JSON.stringify({
+                    userId: userId,
+                    eventId: item.eventId,
+                    registrationFee: item.registrationFee * item.quantity,
+                    paymentStatus: "paid",
+                    quantity: item.quantity
+                })
             })
-
-            const responseData = await response.json()
-
-
-            if(responseData.success){
-                fetchData()
-            }
-        }
-    }
-
-    const deleteCartProduct = async(id)=>{
-        const response = await fetch(SummaryApi.deleteCartProduct.url,{
-            method : SummaryApi.deleteCartProduct.method,
-            credentials : 'include',
-            headers : {
-                "content-type" : 'application/json'
-            },
-            body : JSON.stringify(
-                {   
-                    id : id,
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    toast.success("Payment successful! Event added to cart.");
+                } else {
+                    toast.error("Failed to add event to cart: " + response.message);
                 }
-            )
-        })
-
-        const responseData = await response.json()
-
-        if(responseData.success){
-            fetchData()
-            context.fetchUserAddToCart()
+            })
+            .catch(err => {
+                toast.error("API request failed: " + err);
+            });
         }
-    }
 
-    const totalQty = data.reduce((previousValue,currentValue)=> previousValue + currentValue.quantity,0)
-    const totalPrice = data.reduce((preve,curr)=> preve + (curr.quantity * curr?.product?.sellingPrice) ,0)
-  return (
-    <div className='container mx-auto'>
-        
-        <div className='text-center text-lg my-3'>
-            {
-                data.length === 0 && !loading && (
-                    <p className='bg-white py-5'>No Data</p>
-                )
-            }
-        </div>
+       
+        navigate("/my-events", { state: { cartItems } });
+    };
 
-        <div className='flex flex-col lg:flex-row gap-10 lg:justify-between p-4'>   
-                {/***view product */}
-                <div className='w-full max-w-3xl'>
-                    {
-                        loading ? (
-                            loadingCart?.map((el,index) => {
-                                return(
-                                    <div key={el+"Add To Cart Loading"+index} className='w-full bg-slate-200 h-32 my-2 border border-slate-300 animate-pulse rounded'>
-                                    </div>
-                                )
-                            })
-                             
-                        ) : (
-                          data.map((product,index)=>{
-                           return(
-                            <div key={product?.id+"Add To Cart Loading"} className='w-full bg-white h-32 my-2 border border-slate-300  rounded grid grid-cols-[128px,1fr]'>
-                                <div className='w-32 h-32 bg-slate-200'>
-                                <img src={product?.product?.productImage[0]} className="w-full h-full object-scale-down mix-blend-multiply" />
-
-                                </div>
-                                <div className='px-4 py-2 relative'>
-                                    {/**delete product */}
-                                    <div className='absolute right-0 text-red-600 rounded-full p-2 hover:bg-red-600 hover:text-white cursor-pointer' onClick={()=>deleteCartProduct(product?.id)}>
-                                        <MdDelete/>
-                                    </div>
-
-                                    <h2 className='text-lg lg:text-xl text-ellipsis line-clamp-1'>{product?.product?.productName}</h2>
-                                    <p className='capitalize text-slate-500'>{product?.product.category}</p>
-                                    <div className='flex items-center justify-between'>
-                                            <p className='text-red-600 font-medium text-lg'>{displayINRCurrency(product?.product?.sellingPrice)}</p>
-                                            <p className='text-slate-600 font-semibold text-lg'>{displayINRCurrency(product?.product?.sellingPrice  * product?.quantity)}</p>
-                                    </div>
-                                    <div className='flex items-center gap-3 mt-1'>
-                                        <button className='border border-red-600 text-red-600 hover:bg-red-600 hover:text-white w-6 h-6 flex justify-center items-center rounded ' onClick={()=>decraseQty(product?.id,product?.quantity)}>-</button>
-                                        <span>{product?.quantity}</span>
-                                        <button className='border border-red-600 text-red-600 hover:bg-red-600 hover:text-white w-6 h-6 flex justify-center items-center rounded ' onClick={()=>increaseQty(product?.id,product?.quantity)}>+</button>
-                                    </div>
-                                </div>    
+    return (
+        <div className="p-4 bg-gray-50 min-h-screen">
+            <h2 className="font-bold text-xl">Cart</h2>
+            <div className="bg-white p-4 rounded shadow-md">
+                {cartItems.length === 0 ? (
+                    <p>No items in the cart</p>
+                ) : (
+                    cartItems.map((item, index) => (
+                        <div key={index} className="flex justify-between items-center mb-4">
+                            <div>
+                                <p>Event ID: {item.eventId}</p>
+                                <p>Registration Fee per Ticket: {item.registrationFee.toFixed(2)} BDT</p>
+                                <p>Total: {(item.registrationFee * item.quantity).toFixed(2)} BDT</p>
+                                <input
+                                    type="number"
+                                    value={item.quantity}
+                                    min="1"
+                                    onChange={(e) => updateQuantity(index, parseInt(e.target.value))}
+                                    className="border p-1 w-16"
+                                />
                             </div>
-                           )
-                          })
-                        )
-                    }
-                </div>
-
-
-                {/***summary  */}
-                <div className='mt-5 lg:mt-0 w-full max-w-sm'>
-                        {
-                            loading ? (
-                            <div className='h-36 bg-slate-200 border border-slate-300 animate-pulse'>
-                                
-                            </div>
-                            ) : (
-                                <div className='h-36 bg-white'>
-                                    <h2 className='text-white bg-red-600 px-4 py-1'>Summary</h2>
-                                    <div className='flex items-center justify-between px-4 gap-2 font-medium text-lg text-slate-600'>
-                                        <p>Quantity</p>
-                                        <p>{totalQty}</p>
-                                    </div>
-
-                                    <div className='flex items-center justify-between px-4 gap-2 font-medium text-lg text-slate-600'>
-                                        <p>Total Price</p>
-                                        <p>{displayINRCurrency(totalPrice)}</p>    
-                                    </div>
-
-                                    <button className='bg-blue-600 p-2 text-white w-full mt-2'>Payment</button>
-
-                                </div>
-                            )
-                        }
-                </div>
+                            <button
+                                className="text-red-600 p-2 hover:bg-red-600 hover:text-white rounded-full"
+                                onClick={() => setCartItems([])}
+                            >
+                                <MdDelete />
+                            </button>
+                        </div>
+                    ))
+                )}
+                <button
+                    className="p-2 bg-green-600 text-white rounded hover:bg-green-700 transition mt-4"
+                    onClick={handleConfirmPayment}
+                >
+                    Confirm Payment
+                </button>
+            </div>
         </div>
-    </div>
-  )
-}
+    );
+};
 
-export default Cart
+export default Cart;

@@ -44,6 +44,11 @@ const Login = () => {
 
         if(dataApi.success){
             toast.success(dataApi.message)
+            sessionStorage.setItem('user', JSON.stringify({
+                userId: data.id,
+                email: data.email,
+                //token: dataApi.token, // Assuming the response contains a token
+            }));
             navigate('/')
             fetchUserDetails()
             fetchUserAddToCart()

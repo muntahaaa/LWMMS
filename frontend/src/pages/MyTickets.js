@@ -8,6 +8,9 @@ import {
   FaShoppingCart,
   FaInfoCircle,
 } from "react-icons/fa";
+import { jsPDF } from "jspdf"; // Import jsPDF to generate PDF
+import QRCode from "qrcode";
+
 const MyTickets = () => {
   const [myTickets, setMyTickets] = useState([]);
   const navigate = useNavigate();
@@ -40,6 +43,134 @@ const MyTickets = () => {
   const handleTicketDetails = (ticketId) => {
     // Redirect to ticket details page for further info or to update the ticket
     navigate(`/ticket-details/${ticketId}`);
+  };
+
+  const handleDownloadPDF = async (ticket) => {
+    try {
+      // Generate QR Code Data
+      const qrCodeData = JSON.stringify({
+        ticketId: `LWM-${new Date().getFullYear()}-${Math.floor(
+          Math.random() * 10000
+        )
+          .toString()
+          .padStart(4, "0")}`,
+        entryDate: ticket.entry_date,
+        purchaseDate: ticket.purchase_date,
+        quantity: ticket.quantity,
+        type: ticket.type,
+      });
+
+      // Generate QR Code as Data URL
+      const qrCodeDataUrl = await QRCode.toDataURL(qrCodeData, {
+        errorCorrectionLevel: "H",
+        type: "image/png",
+        width: 128,
+        margin: 1,
+        color: {
+          dark: "#000000",
+          light: "#ffffff",
+        },
+      });
+
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      // Background with subtle gradient effect
+      doc.setFillColor(240, 248, 255);
+      doc.rect(0, 0, 210, 297, "F");
+
+      // Decorative Border with Patriotic Colors
+      doc.setDrawColor(0, 102, 71); // Deep Green (Bangladesh Flag)
+      doc.setLineWidth(2);
+      doc.rect(10, 10, 190, 277, "D");
+
+      // Header Section
+      doc.setFillColor(0, 102, 71);
+      doc.rect(10, 10, 190, 40, "F");
+
+      // Museum Name
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(24);
+      doc.text("Liberation War Museum", 105, 35, { align: "center" });
+
+      // Ticket Header
+      doc.setFontSize(18);
+      doc.setTextColor(0, 0, 0);
+      doc.text("ENTRY TICKET", 105, 55, { align: "center" });
+
+      // Ticket ID
+      const ticketId = `LWM-${new Date().getFullYear()}-${Math.floor(
+        Math.random() * 10000
+      )
+        .toString()
+        .padStart(4, "0")}`;
+      doc.setFontSize(12);
+      doc.text(`Ticket ID: ${ticketId}`, 20, 70);
+
+      // QR Code Integration
+      doc.addImage(qrCodeDataUrl, "PNG", 150, 65, 40, 40);
+
+      // Ticket Details
+      doc.setFontSize(12);
+      doc.text(`Entry Date: ${ticket.entry_date}`, 20, 100);
+      doc.text(`Purchase Date: ${ticket.purchase_date}`, 20, 110);
+      doc.text(`Number of Visitors: ${ticket.quantity}`, 20, 120);
+      doc.text(`Ticket Type: ${ticket.type}`, 20, 130);
+
+      // Historical Context Box
+      doc.setFillColor(230, 230, 250);
+      doc.rect(20, 150, 170, 50, "F");
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(10);
+      doc.text(
+        "The Liberation War Museum preserves the memory of Bangladesh's",
+        105,
+        165,
+        { align: "center" }
+      );
+      doc.text(
+        "struggle for independence and honors the sacrifices of its heroes.",
+        105,
+        172,
+        { align: "center" }
+      );
+
+      // Museum Information
+      doc.setFillColor(240, 240, 255);
+      doc.rect(20, 210, 170, 60, "F");
+
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(12);
+      doc.text("Museum Information", 105, 220, { align: "center" });
+
+      doc.setFontSize(10);
+      doc.text("Location: Sher-e Bangla Nagar Civic Centre", 105, 230, {
+        align: "center",
+      });
+      doc.text("Agargaon, Dhaka, Bangladesh", 105, 237, { align: "center" });
+      doc.text("Contact: +880-2-9143018", 105, 244, { align: "center" });
+      doc.text("Website: www.liberationwarmuseum.org", 105, 251, {
+        align: "center",
+      });
+
+      // Important Notes
+      doc.setTextColor(178, 34, 38); // Deep Red
+      doc.setFontSize(10);
+      doc.text(
+        "IMPORTANT GUIDELINES: Photography in designated areas only",
+        20,
+        280
+      );
+
+      // Save PDF
+      doc.save(`${ticket.type}_Ticket.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
   };
 
   return (
@@ -86,6 +217,15 @@ const MyTickets = () => {
                 <p className="text-sm text-gray-600">
                   Show this ticket at the museum entrance.
                 </p>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigating to ticket details page
+                    handleDownloadPDF(ticket); // Trigger PDF download
+                  }}
+                  className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-all duration-200"
+                >
+                  Download PDF
+                </button>
               </div>
             </div>
           ))
@@ -117,4 +257,3 @@ const MyTickets = () => {
 };
 
 export default MyTickets;
- 

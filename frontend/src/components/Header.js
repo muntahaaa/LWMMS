@@ -187,6 +187,12 @@ const Header = () => {
                     Events
                   </Link>
                   <Link
+                    to="/my-events"
+                    className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
+                  >
+                    My Events
+                  </Link>
+                  <Link
                     to="/tickets"
                     className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
                   >

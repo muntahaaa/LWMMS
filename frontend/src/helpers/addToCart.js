@@ -12,7 +12,7 @@ const addToCart = async(e,id) =>{
             "content-type" : 'application/json'
         },
         body : JSON.stringify(
-            { productId : id }
+            { eventId : id }
         )
     })
 
