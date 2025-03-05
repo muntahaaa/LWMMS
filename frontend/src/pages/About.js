@@ -5,7 +5,7 @@ const About = () => {
     <section className="bg-gray-100 min-h-screen py-10">
       {/** ✅ Hero Section */}
       <div className="relative bg-cover bg-center h-[400px] flex items-center justify-center"
-           style={{ backgroundImage: "url('/images/museum-hero.jpg')" }}>
+           style={{ backgroundImage: "url('/images/bg8.jpg')" }}>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <h1 className="relative text-white text-4xl md:text-5xl font-bold text-center">
           About the <span className="text-red-500">Liberation War Museum</span>

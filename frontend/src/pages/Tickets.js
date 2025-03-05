@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SummaryApi from "../common"; // Import API helper
 import { toast } from "react-toastify";
+import { FaClock, FaTimes} from "react-icons/fa"; // Importing React Icons
+import { FaCalendarAlt, FaTicketAlt } from 'react-icons/fa';
+import {  FaSun, FaMoon } from "react-icons/fa";
 
 const Tickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -95,106 +98,135 @@ const Tickets = () => {
   
   
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center my-4">Available Tickets</h1>
+    <div className="container mx-auto p-4 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold text-center my-6 text-gray-800">Museum Entry Tickets</h1>
+  
+      {/* Museum Timings */}
+<div className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-8">
+  <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+    <FaClock className="mr-2 text-blue-600" /> Museum Opening Hours
+  </h2>
 
+  {/* Timings Grid */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    {/* March to September */}
+    <div className="flex items-start bg-gray-50 p-4 rounded-lg">
+      <FaSun className="text-2xl text-yellow-500 mr-4" />
+      <div>
+        <h3 className="text-lg font-semibold text-gray-700">March to September</h3>
+        <p className="text-sm text-gray-600">10:00 AM - 6:00 PM</p>
+      </div>
+    </div>
+
+    {/* October to February */}
+    <div className="flex items-start bg-gray-50 p-4 rounded-lg">
+      <FaMoon className="text-2xl text-indigo-500 mr-4" />
+      <div>
+        <h3 className="text-lg font-semibold text-gray-700">October to February</h3>
+        <p className="text-sm text-gray-600">10:00 AM - 5:00 PM</p>
+      </div>
+    </div>
+
+    {/* Ramadan Time */}
+    <div className="flex items-start bg-gray-50 p-4 rounded-lg">
+      <FaCalendarAlt className="text-2xl text-green-500 mr-4" />
+      <div>
+        <h3 className="text-lg font-semibold text-gray-700">Ramadan Time</h3>
+        <p className="text-sm text-gray-600">10:00 AM - 3:30 PM</p>
+      </div>
+    </div>
+
+    {/* Weekend */}
+    <div className="flex items-start bg-gray-50 p-4 rounded-lg">
+      <FaClock className="text-2xl text-red-500 mr-4" />
+      <div>
+        <h3 className="text-lg font-semibold text-gray-700">Weekend</h3>
+        <p className="text-sm text-gray-600">Sunday</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Additional Info */}
+  <p className="text-sm text-gray-500 mt-6 text-center">
+    *Please note that the museum may have special hours during holidays.
+  </p>
+</div>
+  
       {/* Tickets List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {tickets.length > 0 ? (
           tickets.map((ticket) => (
             <div
               key={ticket.id}
-              className="border rounded-lg p-4 shadow-lg cursor-pointer hover:bg-gray-100"
+              className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
               onClick={() => handleTicketSelect(ticket)}
             >
-              <h2 className="text-lg font-semibold">{ticket.type}</h2>
-              <p className="text-sm text-gray-600">{ticket.price}</p>
-              <p className="text-sm text-gray-600">
-                Available: {ticket.total_quantity}
-              </p>
+              <div className="text-center relative">
+                {/* Ticket Ribbon */}
+                        <div className="absolute top-0 left-0 bg-blue-600 text-white px-4 py-2 rounded-br-lg text-sm font-semibold flex items-center">
+                           Ticket
+                        </div>
+                <FaTicketAlt className="text-4xl text-blue-600 mx-auto" />
+                <h2 className="text-xl font-semibold mt-4 text-gray-800">{ticket.type}</h2>
+                <p className="text-lg font-bold text-blue-600 mt-2">Price(BDT)- {ticket.price}</p>
+                <p className="text-sm text-gray-500 mt-1">Liberation War Museum</p>
+              </div>
             </div>
           ))
         ) : (
-          <p>No tickets available at the moment.</p>
+          <p className="text-gray-600">No tickets available at the moment.</p>
         )}
       </div>
-
-      {/* Ticket Details */}
+  
+      {/* Ticket Details Modal */}
       {selectedTicket && (
-        <div className="mt-8 flex justify-center">
-          <div className="w-full max-w-md">
-            {" "}
-            {/* Limit width for better full-screen appearance */}
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-              Ticket Details
-            </h2>
-            <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                {selectedTicket.type}
-              </h3>
-              <p className="text-gray-600 mb-6">{selectedTicket.description}</p>
-
-              {/* Date Selection */}
-              <div className="mb-6">
-                <label
-                  htmlFor="entryDate"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Select Entry Date:
-                </label>
-                <div className="relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative">
+            {/* Close Button (X) */}
+            <button
+              onClick={() => setSelectedTicket(null)} // Close the modal
+              className="absolute top-4 right-4 p-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+            >
+              <FaTimes className="text-2xl" /> {/* Close icon */}
+            </button>
+  
+            <div className="p-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Ticket Details</h2>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">{selectedTicket.type}</h3>
+                  <p className="text-gray-600 mt-2">{selectedTicket.description}</p>
+                </div>
+  
+                {/* Date Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <FaCalendarAlt className="mr-2" /> Select Entry Date:
+                  </label>
                   <input
                     type="date"
-                    id="entryDate"
                     value={selectedDate}
                     onChange={handleDateChange}
-                    min={new Date().toISOString().split("T")[0]} // Disable past dates
-                    max={
-                      new Date(new Date().setDate(new Date().getDate() + 5))
-                        .toISOString()
-                        .split("T")[0]
-                    } // Disable dates more than 5 days after today
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none text-gray-900" // Custom styling for date input
+                    min={new Date().toISOString().split("T")[0]}
+                    max={new Date(new Date().setDate(new Date().getDate() + 5)).toISOString().split("T")[0]}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                   />
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg
-                      className="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      ></path>
-                    </svg>
-                  </span>
                 </div>
-              </div>
-
-              {/* Quantity Selection */}
-              <div className="mb-6">
-                <label
-                  htmlFor="quantity"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Select Quantity:
-                </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  min="1"
-                  max={selectedTicket.quantity}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                />
-              </div>
-
-              {/* Purchase Button */}
-              <div className="mt-8 text-center">
+  
+                {/* Quantity Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Select Quantity:</label>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    min="1"
+                    max={selectedTicket.quantity}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  />
+                </div>
+  
+                {/* Purchase Button */}
                 <button
                   onClick={handlePurchase}
                   className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"

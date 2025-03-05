@@ -24,7 +24,8 @@
     "pg-hstore": "^2.3.4",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "stripe": "^17.7.0"
   },
   "description": "",
   "devDependencies": {

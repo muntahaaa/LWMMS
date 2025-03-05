@@ -6,19 +6,19 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const navigateToExhibits = () => navigate("/exhibits");
-  const navigateToAboutUs = () => navigate("/about-us");
+  const navigateToAboutUs = () => navigate("/about");
   const navigateToTickets = () => navigate("/tickets");
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-600 text-white">
       {/* Hero Section */}
       <section
         className="relative bg-cover bg-center h-screen"
-        style={{ backgroundImage: 'url("/images/bg5.png")' }}
+        style={{ backgroundImage: 'url("/images/bg1.jpg")' }}
       >
         <div className="absolute inset-0 bg-black opacity-60"></div>
         <div className="container mx-auto text-center z-10 relative pt-24">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-red-600 mb-6">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white-600 mb-6">
             Liberation War Museum
           </h1>
           <p className="text-lg md:text-2xl mb-6 text-gray-200">
