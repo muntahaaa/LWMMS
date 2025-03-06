@@ -83,7 +83,7 @@ const PaymentDetailsPage = () => {
           <div className="flex items-center text-gray-700">
             <FaInfoCircle className="text-xl mr-2 text-blue-600" />
             <div>
-              <span className="font-semibold">Total Price:</span> ${totalPrice}
+              <span className="font-semibold">Total Price:</span> {totalPrice} BDT
             </div>
           </div>
         </div>

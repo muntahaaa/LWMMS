@@ -13,7 +13,7 @@ const PaymentSummary = ({ selectedTicket, quantity, totalPrice }) => {
         {/* Ticket Header */}
         <div className="text-center mb-6">
           <h3 className="text-xl font-bold text-gray-800">{selectedTicket.type}</h3>
-          <p className="text-sm text-gray-600">Museum of Art & History</p>
+          <p className="text-sm text-gray-600">Liberation War Museum</p>
         </div>
 
         {/* Ticket Details */}
@@ -27,13 +27,13 @@ const PaymentSummary = ({ selectedTicket, quantity, totalPrice }) => {
           <div className="flex items-center text-gray-700">
             <FaMoneyBillWave className="text-xl mr-2 text-blue-600" />
             <div>
-              <span className="font-semibold">Price per Ticket:</span> ${selectedTicket.price}
+              <span className="font-semibold">Price per Ticket:</span> {selectedTicket.price} BDT
             </div>
           </div>
           <div className="flex items-center text-gray-700">
             <FaCheckCircle className="text-xl mr-2 text-blue-600" />
             <div>
-              <span className="font-semibold">Total Price:</span> ${totalPrice}
+              <span className="font-semibold">Total Price:</span> {totalPrice} BDT
             </div>
           </div>
         </div>

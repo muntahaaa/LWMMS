@@ -62,6 +62,18 @@ const AdminPanel = () => {
           >
             All Tickets
           </Link>
+          <Link
+            to={"user-logs"}
+            className="px-4 py-2 hover:bg-gray-100 rounded transition-all"
+          >
+            Event Logs
+          </Link>
+          <Link
+            to={"ticket-logs"}
+            className="px-4 py-2 hover:bg-gray-100 rounded transition-all"
+          >
+            Ticket Logs
+          </Link>
         </nav>
       </aside>
 

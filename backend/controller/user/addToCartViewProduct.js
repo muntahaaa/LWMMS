@@ -14,7 +14,7 @@ const addToCartViewProduct = async (req, res) => {
                   
             ],
         });
-        console.log("Cart Products:", JSON.stringify(allProduct, null, 2)); // ✅ Logs the entire response
+        //console.log("Cart Products:", JSON.stringify(allProduct, null, 2)); // ✅ Logs the entire response
 
 
         res.json({

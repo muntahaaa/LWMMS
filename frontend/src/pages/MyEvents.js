@@ -5,6 +5,7 @@ import SummaryApi from "../common";
 const MyEvents = () => {
     const [bookedEvents, setBookedEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const[quantity,setQuantity] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,10 +22,15 @@ const MyEvents = () => {
                     return;
                 }
 
-                const eventDetails = cartData.data.map(item => item.event);
+              
+                const eventDetails = cartData.data.map(item => ({
+                    ...item.event, 
+                    quantity: item.quantity, 
+                }));
 
                 setBookedEvents(eventDetails);
                 setLoading(false);
+               
             } catch (error) {
                 console.error("Error fetching booked events:", error);
                 setLoading(false);
@@ -52,18 +58,18 @@ const MyEvents = () => {
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
                                 position: "relative",
-                                padding: "20px", // Optional: padding to create space inside the box
+                                padding: "20px", 
                             }}
                         >
                             <div
                                 style={{
-                                    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark overlay to reduce the opacity of the background image
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)", 
                                     position: "absolute",
                                     top: 0,
                                     left: 0,
                                     right: 0,
                                     bottom: 0,
-                                    zIndex: 0, // Ensure overlay stays behind content
+                                    zIndex: 0, 
                                 }}
                             />
                             <div style={{ zIndex: 1 }}>
@@ -71,7 +77,7 @@ const MyEvents = () => {
                                 <p className="text-gray-200">{event.description}</p>
                                 <p className="text-gray-200">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
                                 <p className="text-gray-200">Location: {event.eventPlace}</p>
-                                <p className="text-gray-200 font-bold">Registration Fee: {event.registrationFee} BDT</p>
+                                <p className="text-gray-200">Quantity: {event.quantity}</p> 
                             </div>
                         </div>
                     ))

@@ -9,10 +9,36 @@ const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
-    const userId = JSON.parse(sessionStorage.getItem('user'))?.userId || 1
-     // Replace with actual user ID from authentication
-console.log('user id ',userId)
+    const [userId, setUserId] = useState(null);
+   
+    console.log('user id ', userId)
+    
     useEffect(() => {
+
+        const fetchUser = async () => {
+            try {
+                const response = await fetch(SummaryApi.current_user.url, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const responseData = await response.json();
+                if (responseData.success && responseData.data) {
+                    setUserId(responseData.data.id); // user ID is stored in `data.data.id`
+                    console.log("Fetched user ID:", responseData.data.id);
+                } else {
+                    toast.error("Failed to fetch user details.");
+                }
+            } catch (error) {
+                toast.error("Error fetching user details: " + error.message);
+            }
+        };
+
+        fetchUser();
+
         const queryParams = new URLSearchParams(location.search);
         const eventId = queryParams.get("eventId");
         const registrationFee = parseFloat(queryParams.get("registrationFee"));
@@ -35,8 +61,12 @@ console.log('user id ',userId)
             return updatedItems;
         });
     };
- 
+
     const handleConfirmPayment = async () => {
+        if (!userId) {
+            toast.error("You must Login to book an event.");
+            return;
+        }
         for (const item of cartItems) {
             await fetch(SummaryApi.addToCartProduct.url, {
                 method: SummaryApi.addToCartProduct.method,
@@ -52,36 +82,36 @@ console.log('user id ',userId)
                     quantity: item.quantity
                 })
             })
-            .then(res => res.json())
-            .then(response => {
-                if (response.success) {
-                    toast.success("Payment successful! Event added to cart.");
-                } else {
-                    toast.error("Failed to add event to cart: " + response.message);
-                }
-            })
-            .catch(err => {
-                toast.error("API request failed: " + err);
-            });
+                .then(res => res.json())
+                .then(response => {
+                    if (response.success) {
+                        toast.success("Payment successful! Event booking confirmed.");
+                    } else {
+                        toast.error("Failed to book event " + response.message);
+                    }
+                })
+                .catch(err => {
+                    toast.error("API request failed: " + err);
+                });
         }
 
-       
+
         navigate("/my-events", { state: { cartItems } });
     };
 
     return (
         <div className="p-4 bg-gray-50 min-h-screen">
-            <h2 className="font-bold text-xl">Cart</h2>
+            <h2 className="font-bold text-xl">Event booking confirmation</h2>
             <div className="bg-white p-4 rounded shadow-md">
                 {cartItems.length === 0 ? (
-                    <p>No items in the cart</p>
+                    <p>No events booked</p>
                 ) : (
                     cartItems.map((item, index) => (
                         <div key={index} className="flex justify-between items-center mb-4">
                             <div>
                                 <p>Event ID: {item.eventId}</p>
-                                <p>Registration Fee per Ticket: {item.registrationFee.toFixed(2)} BDT</p>
-                                <p>Total: {(item.registrationFee * item.quantity).toFixed(2)} BDT</p>
+                               
+                                <p>Select the number of booking seat:</p>
                                 <input
                                     type="number"
                                     value={item.quantity}
@@ -103,7 +133,7 @@ console.log('user id ',userId)
                     className="p-2 bg-green-600 text-white rounded hover:bg-green-700 transition mt-4"
                     onClick={handleConfirmPayment}
                 >
-                    Confirm Payment
+                    Confirm Booking
                 </button>
             </div>
         </div>

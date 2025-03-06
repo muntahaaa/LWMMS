@@ -57,7 +57,7 @@ const MyTickets = () => {
         entryDate: ticket.entry_date,
         purchaseDate: ticket.purchase_date,
         quantity: ticket.quantity,
-        type: ticket.type,
+        type: ticket.ticket.type,
       });
 
       // Generate QR Code as Data URL
@@ -119,7 +119,7 @@ const MyTickets = () => {
       doc.text(`Entry Date: ${ticket.entry_date}`, 20, 100);
       doc.text(`Purchase Date: ${ticket.purchase_date}`, 20, 110);
       doc.text(`Number of Visitors: ${ticket.quantity}`, 20, 120);
-      doc.text(`Ticket Type: ${ticket.type}`, 20, 130);
+      doc.text(`Ticket Type: ${ticket.ticket.type}`, 20, 130);
 
       // Historical Context Box
       doc.setFillColor(230, 230, 250);
@@ -167,7 +167,7 @@ const MyTickets = () => {
       );
 
       // Save PDF
-      doc.save(`${ticket.type}_Ticket.pdf`);
+      doc.save(`${ticket.ticket.type}_Ticket.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
     }
@@ -189,24 +189,24 @@ const MyTickets = () => {
               onClick={() => handleTicketDetails(ticket.id)}
             >
               {/* Ticket Ribbon */}
-              <div className="absolute top-0 left-0 bg-blue-600 text-white px-4 py-1 rounded-br-lg text-sm font-semibold">
-                <FaTicketAlt className="inline-block mr-2" /> {ticket.type}
+              <div className="absolute top-0 left-0 bg-green-800 text-white px-4 py-1 rounded-br-lg text-sm font-semibold">
+                <FaTicketAlt className="inline-block mr-2" /> {ticket.ticket.type}
               </div>
 
               {/* Ticket Content */}
               <div className="mt-8 space-y-4">
                 <div className="flex items-center text-gray-700">
-                  <FaCalendarDay className="text-xl mr-2 text-blue-600" />
+                  <FaCalendarDay className="text-xl mr-2 text-green-800" />
                   <span className="font-semibold">Entry Date:</span>{" "}
                   {ticket.entry_date}
                 </div>
                 <div className="flex items-center text-gray-700">
-                  <FaShoppingCart className="text-xl mr-2 text-blue-600" />
+                  <FaShoppingCart className="text-xl mr-2 text-green-800" />
                   <span className="font-semibold">Purchase Date:</span>{" "}
                   {ticket.purchase_date}
                 </div>
                 <div className="flex items-center text-gray-700">
-                  <FaInfoCircle className="text-xl mr-2 text-blue-600" />
+                  <FaInfoCircle className="text-xl mr-2 text-green-800" />
                   <span className="font-semibold">Quantity:</span>{" "}
                   {ticket.quantity}
                 </div>
@@ -222,9 +222,9 @@ const MyTickets = () => {
                     e.stopPropagation(); // Prevent navigating to ticket details page
                     handleDownloadPDF(ticket); // Trigger PDF download
                   }}
-                  className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-all duration-200"
+                  className="mt-4 bg-stone-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-all duration-200"
                 >
-                  Download PDF
+                  Download Ticket
                 </button>
               </div>
             </div>

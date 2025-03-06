@@ -30,7 +30,7 @@ const SuccessPopup = ({ isOpen, onClose, selectedTicket, quantity, totalPrice })
         </div>
         <h2 className="text-2xl font-bold text-green-600">Payment Successful!</h2>
         <p className="mt-2">You have successfully purchased {quantity} tickets for {selectedTicket.type}.</p>
-        <p className="mt-2 font-semibold text-lg">Total: ${totalPrice}</p>
+        <p className="mt-2 font-semibold text-lg">Total: {totalPrice} BDT</p>
         <div className="mt-6 flex justify-center space-x-4">
           <button
             onClick={handleGoToMyTickets}

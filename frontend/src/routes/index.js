@@ -24,6 +24,8 @@ import Tickets from "../pages/Tickets";
 import CreateTicket from "../pages/CreateTicket";
 import PaymentDetailsPage from "../pages/PaymentDetailsPage";
 import HomePage from "../pages/HomePage";
+import UserLogs from '../pages/EventLogs';
+import TicketLogs from '../pages/TicketLogs';
 
 const stripePromise = loadStripe("pk_test_51QyjPJAc6quVWDe20MBANndLIAdypz68dhfLF5K3VS0VCX5SOVu2ABeW6a9PXMWxxFzdJehLjhZkvsINwTQ2QKvh00NnnKktqT");
 const router = createBrowserRouter([
@@ -95,6 +97,8 @@ const router = createBrowserRouter([
                     },
                     { path: "all-tickets", element: <AllTickets /> },
                     { path: "add-ticket", element: <CreateTicket /> },
+                    { path: "user-logs", element: <UserLogs/> },
+                    { path: "ticket-logs", element: <TicketLogs/> },
                 ]
             },
             { path: "payment-details/:ticketId", element: <Elements stripe={stripePromise}>  {/* Wrap your components in Elements */}

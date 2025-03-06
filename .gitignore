@@ -131,3 +131,7 @@ dist
 
 # Ignore frontend/src/assets if it's for media or compiled files
 frontend/src/assest/
+
+virtualTour/public
+
+virtualTour/node_modules

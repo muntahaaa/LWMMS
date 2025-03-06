@@ -58,12 +58,12 @@ const AllEvents = () => {
                                         <MdLocationOn className="mr-2" />
                                         <p className="text-gray-600">{event.eventPlace}</p>
                                     </div>
-                                    <div className="flex items-center">
+                                    {/* <div className="flex items-center">
                                         <IoTicketSharp className="mr-2" />
                                         <p className="text-gray-600">{event.registrationFee} BDT</p>
-                                    </div>
+                                    </div> */}
                                     <button
-                                className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 mt-2"
+                                className="p-2 bg-green-800 text-white rounded hover:bg-blue-700 mt-2"
                                 onClick={() => handleBookEvent(event.id, event.registrationFee)}
                             >
                                 Book an Event

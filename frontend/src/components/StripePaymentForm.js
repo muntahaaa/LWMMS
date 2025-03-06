@@ -45,7 +45,7 @@ const StripePaymentForm = ({ clientSecret, handlePaymentSuccess }) => {
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Payment Details</h2>
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Enter Card Details</h2>
 
       {/* Ticket-shaped Payment Form */}
       <div className="bg-white border-2 border-gray-200 rounded-xl p-8 shadow-lg max-w-md mx-auto relative">
@@ -56,7 +56,7 @@ const StripePaymentForm = ({ clientSecret, handlePaymentSuccess }) => {
 
         {/* Payment Form Header */}
         <div className="text-center mb-6">
-          <h3 className="text-xl font-bold text-gray-800">Museum of Art & History</h3>
+          <h3 className="text-xl font-bold text-gray-800">Liberation War Museum</h3>
           <p className="text-sm text-gray-600">Admission Ticket Purchase</p>
         </div>
 

@@ -81,7 +81,7 @@ const About = () => {
           and contribute to preserving our glorious past.**
         </p>
         <a href="/tickets"
-           className="bg-red-600 hover:bg-red-700 text-white text-lg font-semibold px-6 py-3 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105">
+           className="bg-stone-500 hover:bg-green-900 text-white text-lg font-semibold px-6 py-3 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105">
           🎟️ Get Tickets
         </a>
       </div>

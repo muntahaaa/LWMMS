@@ -31,6 +31,8 @@ const viewTicketController = async (req, res) => {
       });
     }
 
+    console.log("Purchased Ticket --", purchasedTickets);
+
     return res.status(200).json({
       success: true,
       message: "Purchased tickets retrieved successfully.",

@@ -2,7 +2,7 @@ const { User } = require("../../models"); // Import Sequelize User model
 
 async function userDetailsController(req, res) {
     try {
-        console.log("userId", req.userId);
+        console.log("userId from token", req.userId);
 
         // ✅ Sequelize equivalent of `findById()`
         const user = await User.findByPk(req.userId);
@@ -22,7 +22,7 @@ async function userDetailsController(req, res) {
             message: "User details",
         });
 
-        console.log("user", user);
+       
     } catch (err) {
         res.status(400).json({
             message: err.message || err,

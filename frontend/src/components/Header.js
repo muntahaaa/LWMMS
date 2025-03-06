@@ -125,16 +125,7 @@ const Header = () => {
             )}
           </div>
 
-          {user?.id && (
-            <Link to={"/cart"} className="text-2xl relative">
-              <span>
-                <FaShoppingCart />
-              </span>
-              <div className="bg-red-600 text-white w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
-                <p className="text-sm">{context?.cartProductCount}</p>
-              </div>
-            </Link>
-          )}
+          
 
           <div>
             {user?.id ? (
@@ -181,6 +172,12 @@ const Header = () => {
                     About
                   </Link>
                   <Link
+                    to="http://localhost:5173/3D-art-gallery"
+                    className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
+                  >
+                    Have a tour
+                  </Link>
+                  <Link
                     to="/events"
                     className="flex items-center justify-center hover:bg-gray-100 p-3 rounded-lg text-gray-800 font-semibold transition duration-200 hover:scale-105"
                   >
@@ -204,6 +201,7 @@ const Header = () => {
                   >
                     My Tickets
                   </Link>
+                  
                 </nav>
               </div>
             )}

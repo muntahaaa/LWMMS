@@ -85,8 +85,13 @@ const SummaryApi = {
         url: `${backendDomin}/api/upload-event`,
         method: 'post'
     },
+    //event 
     allEvent: {
         url: `${backendDomin}/api/get-event`,
+        method: 'get'
+    },
+    customEvent: {
+        url: `${backendDomin}/custom-event/:eventId`,
         method: 'get'
     },
     updateEvent: {
@@ -137,6 +142,15 @@ const SummaryApi = {
     stripeWebhook: {
         url: `${backendDomin}/api/webhook`,
         method: "post",
+    },
+    //log
+    logEvent: {
+        url: `${backendDomin}/api/log-event`,
+        method: "get",
+    },
+    logTicket: {
+        url: `${backendDomin}/api/log-ticket`,
+        method: "get",
     },
 
 

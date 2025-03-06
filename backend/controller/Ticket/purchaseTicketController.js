@@ -2,6 +2,7 @@ const { Ticket, TicketRegistry } = require("../../models");
 const ticketAvailabilityHelper = require("../../helpers/ticketAvailabilityHelper");
 
 const purchaseTicketController = async (req, res) => {
+  
   const { ticketId, quantity, entryDate } = req.body; // Ticket ID, Quantity, and Entry Date from the client
   const userId = req.userId; // User ID from the authentication token
 
@@ -51,7 +52,7 @@ console.log("new ticket registry",newTicketRegistry);
     console.error("Error uploading ticket:", error);
     return res.status(500).json({
       success: false,
-      message: "Error processing the purchase. Please try again later.",
+      message: "Error processing the purchase. Please try again later123.",
     });
   }
 };

@@ -15,21 +15,22 @@ const addToCartController = async (req, res) => {
         if (paymentStatus !== "paid") {
             return res.status(400).json({
                 message: "Payment not completed. Cannot add to cart.",
+                userId: req.userId,
                 success: false,
                 error: true,
             });
         }
 
         // ✅ Check if the event already exists for this user
-        // const existingEvent = await Cart.findOne({ where: { eventId, userId } });
+         const existingEvent = await Cart.findOne({ where: { eventId, userId } });
 
-        // if (existingEvent) {
-        //     return res.json({
-        //         message: "Already exists in Cart",
-        //         success: false,
-        //         error: true,
-        //     });
-        // }
+         if (existingEvent) {
+             return res.json({
+                message: "Already exists in Cart",
+                 success: false,
+                 error: true,
+             });
+         }
 
         // ✅ Ensure `quantity` and `paymentStatus` are included
         const payload = {

@@ -36,6 +36,9 @@ const viewTicketController = require("../controller/Ticket/viewTicketController"
 const webhookController = require("../controller/Stripe/webhookController");
 const createPaymentIntentController = require("../controller/Stripe/createPaymentIntentController");
 const confirmPaymentController = require("../controller/Stripe/confirmPaymentController");
+const eventDetailsController = require('../controller/event/eventDetail')
+const LogEventController = require('../controller/user/logEvent')
+const LogTicketController = require('../controller/user/logTicket')
 
 
 
@@ -71,6 +74,7 @@ router.post("/delete-cart-product",authToken,deleteAddToCartProduct)
 //event 
 router.post("/upload-event",authToken,UploadEventController)
 router.get("/get-event",getEventController)
+router.get("/custom-event/:eventId",eventDetailsController)
 router.post("/update-event",authToken,updateEventController)
 router.delete("/delete-event/:id",authToken, deleteEventController);
 
@@ -81,6 +85,10 @@ router.post("/delete-ticket", authToken, deleteTicketController);
 router.get("/get-all-tickets", getAllTicketsController);
 router.post("/purchase-ticket", authToken, purchaseTicketController);
 router.get("/view-purchased-ticket", authToken, viewTicketController);
+
+//log
+router.get("/log-event",authToken,LogEventController)
+router.get("/log-ticket",authToken,LogTicketController)
 
 router.post(
   "/webhook",

@@ -99,12 +99,19 @@ const Tickets = () => {
   
   return (
     <div className="container mx-auto p-4 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-center my-6 text-gray-800">Museum Entry Tickets</h1>
+      {/* Header Banner */}
+      <div className="
+bg-green-950 py-12 px-6">
+        <div className="container mx-auto text-center">
+          <h1 className="text-4xl font-bold text-white mb-2">Museum Entry Tickets</h1>
+          <p className="text-stone-300">Secure your visit to explore our nation's history</p>
+        </div>
+      </div>
   
       {/* Museum Timings */}
 <div className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-8">
   <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-    <FaClock className="mr-2 text-blue-600" /> Museum Opening Hours
+    <FaClock className="mr-2 text-green-800" /> Museum Opening Hours
   </h2>
 
   {/* Timings Grid */}
@@ -163,12 +170,12 @@ const Tickets = () => {
             >
               <div className="text-center relative">
                 {/* Ticket Ribbon */}
-                        <div className="absolute top-0 left-0 bg-blue-600 text-white px-4 py-2 rounded-br-lg text-sm font-semibold flex items-center">
+                        <div className="absolute top-0 left-0 bg-green-800 text-white px-4 py-2 rounded-br-lg text-sm font-semibold flex items-center">
                            Ticket
                         </div>
-                <FaTicketAlt className="text-4xl text-blue-600 mx-auto" />
+                <FaTicketAlt className="text-4xl text-green-800 mx-auto" />
                 <h2 className="text-xl font-semibold mt-4 text-gray-800">{ticket.type}</h2>
-                <p className="text-lg font-bold text-blue-600 mt-2">Price(BDT)- {ticket.price}</p>
+                <p className="text-lg font-bold text-orange-950 mt-2">Price(BDT)- {ticket.price}</p>
                 <p className="text-sm text-gray-500 mt-1">Liberation War Museum</p>
               </div>
             </div>
